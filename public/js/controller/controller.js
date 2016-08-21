@@ -17,6 +17,10 @@ ub.controller('mainController',['$scope','$log','$http','fbauthFact','$location'
 		case "4":
 		$location.hash('contact');		
 		$anchorScroll();
+        break;
+        case "5":
+		$location.hash('faq');		
+		$anchorScroll();
 		
 	};
     
