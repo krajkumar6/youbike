@@ -1,0 +1,15 @@
+<div style='margin-top:90px;'><b>Profile details of {{user.fname}}</b></div>
+<div>
+<form name='profile' ng-submit="submit()" >
+    <b>First name :</b><input type="text" name='fname' ng-model="user.fname"></br>
+    <b>Last name :</b><input type="text" name='lname' ng-model="user.lname"></br>
+    <b>Mobile :</b><input type="text" name='mob' ng-model="user.cell"></br>
+    <b>Add 1 :</b><input type="text" name='add1' ng-model="user.add1"></br>
+    <b>Add 2 :</b><input type="text" name='add2' ng-model="user.add2"></br>
+    <b>City :</b><input type="text" name='city' ng-model="user.city"></br>
+    <b>Pin :</b><input type="text" name='pin' ng-model="user.pin"></br>
+    <input type="submit" value="Submit">
+</form>
+<div>
+    {{msg}}
+</div>
