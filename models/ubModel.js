@@ -8,8 +8,8 @@ var custSchema = new Schema(
 	fname : String,
 	lname : String,
 	phone : String,
-	address : String,
-	apartment : String,
+	add1 : String,
+	add2 : String,
 	city : String,
 	pincode : String,
 	gender : String

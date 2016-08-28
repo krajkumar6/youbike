@@ -7,6 +7,7 @@
     </p>
     
     <button ng-click="toggle()">Toggle</button>
+    <div>User details {{usr.fname}} </div>
     </div>
 </html>
 
@@ -23,6 +24,7 @@ app.controller('myctrl',['$scope','$log',function($scope,$log){
             $log.log($scope.test);
         }
     };
+    $scope.usr ={email:"rajini@rajini.com",fname : "Raj",lname :"K",city:"Chennai"};
 }]);
 
 </script>

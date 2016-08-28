@@ -5,6 +5,7 @@ var Schema = Mongoose.Schema;
 var Ordersch = new Schema(
 	{
 	servicedt : Date,
+    appoidt : Date,
 	status : String,
 	regno : String,
 	email : String

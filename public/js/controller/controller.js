@@ -34,10 +34,7 @@ ub.controller('mainController',['$scope','$log','$http','fbauthFact','$location'
                 $scope.profpic=fbauthFact.profpic;
                 //$scope.accesstoken=fbauthFact.accesstoken;
                 //$scope.$apply();
-                $log.log("fblogin() - success :"+response);
-                $log.log("$scope.msg: "+$scope.msg);
-                $log.log("$scope.isAuth:"+$scope.isAuth);
-                $log.log("$scope.profpic:"+$scope.profpic);
+                
                 
             },function(reason){
                  $log.log("fblogin() - failure :Need to login to the application :"+reason);
@@ -67,28 +64,24 @@ ub.controller('orderctrl',["$scope","fbauthFact","$log",function($scope,fbauthFa
     
 }]);
 
-ub.controller('profctrl',["$scope","fbauthFact","formsub","$log",function($scope,fbauthFact,formsub,$log){
+ub.controller('profctrl',["$scope","fbauthFact","formsub","$log","$timeout",function($scope,fbauthFact,formsub,$log,$timeout){
     $log.log("In Profile controller");
     $scope.msg = "";
-    var fbresponse = fbauthFact.getResponseobj();
-   
+    $scope.usr ={};
+   var fbresponse = fbauthFact.getResponseobj();
+   formsub.getprof(fbresponse).then(function(response){
+        $scope.usr = response;
+        $log.log('$scope.usr',$scope.usr);
+    });
     
-    $scope.reset = function(){
-        $scope.user = formsub.getprof();
-    };
-    $scope.reset();//calling reset by default
-    
-    $scope.submit = function(user){
-        $scope.user.email=fbresponse.email;
-        formsub.submit($scope.user).then(function(response){
+   $scope.submit = function(){
+        
+        formsub.submit($scope.usr).then(function(response){
                 $scope.msg=response;
                 },function(reason){
                 $scope.msg=reason;
             });
-    };
-    
-    
-  
+    };//submit
 }]);
 
 ub.controller('apctrl',["$scope","fbauthFact","$log",function($scope,fbauthFact,$log){

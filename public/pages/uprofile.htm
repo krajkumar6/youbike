@@ -1,14 +1,62 @@
-<div style='margin-top:90px;'><b>Profile details of {{user.fname}}</b></div>
-<div>
-<form name='profile' ng-submit="submit()" >
-    <b>First name :</b><input type="text" name='fname' ng-model="user.fname"></br>
-    <b>Last name :</b><input type="text" name='lname' ng-model="user.lname"></br>
-    <b>Mobile :</b><input type="text" name='mob' ng-model="user.cell"></br>
-    <b>Add 1 :</b><input type="text" name='add1' ng-model="user.add1"></br>
-    <b>Add 2 :</b><input type="text" name='add2' ng-model="user.add2"></br>
-    <b>City :</b><input type="text" name='city' ng-model="user.city"></br>
-    <b>Pin :</b><input type="text" name='pin' ng-model="user.pin"></br>
-    <input type="submit" value="Submit">
+<div class='container' style='margin-top:90px;'>
+<div class='row'>
+    <div class='col-md-offset-4 col-md-8'><h3>Profile details of {{usr.fname}}</h3> </div>    
+</div>    
+</div>
+<div class='container'>
+<form class="form-horizontal" name='profile' ng-submit="submit()" >
+    
+    <div class="form-group">
+      <label class="control-label col-md-4" for="fname">First Name :</label>
+      <div class="col-md-4">
+        <input type="text" class="form-control" id="fname" ng-model="usr.fname" placeholder="First Name">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="control-label col-md-4" for="lname">Last Name :</label>
+      <div class="col-md-4">
+        <input type="text" class="form-control" id="lname" ng-model="usr.lname" placeholder="Last Name">
+      </div>
+    </div>
+    
+     <div class="form-group">
+      <label class="control-label col-md-4" for="mob">Mobile :</label>
+      <div class="col-md-4">
+        <input type="tel" class="form-control" id="mob" ng-model="usr.phone" placeholder="Phone">
+      </div>
+    </div>
+     <div class="form-group">
+      <label class="control-label col-md-4" for="add1">Add 1 :</label>
+      <div class="col-md-4">
+        <input type="text" class="form-control" id="add1" ng-model="usr.add1" placeholder="address1">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="control-label col-md-4" for="add2">Add 2 :</label>
+      <div class="col-md-4">
+        <input type="text" class="form-control" id="add2" ng-model="usr.add2" placeholder="address2">
+      </div>
+    </div>
+   <div class="form-group">
+      <label class="control-label col-md-4" for="city">Add 2 :</label>
+      <div class="col-md-4">
+        <input type="text" class="form-control" id="city" ng-model="usr.city" placeholder="city">
+      </div>
+    </div>
+     <div class="form-group">
+      <label class="control-label col-md-4" for="pin">Pin :</label>
+      <div class="col-md-4">
+        <input type="text" class="form-control" id="pin" ng-model="usr.pincode" placeholder="pin">
+      </div>
+    </div>
+    
+    <div class="form-group">
+     
+      <div class="col-md-offset-4 col-xs-offset-4 col-md-4 col-xs-4 text-center">
+        <button type="submit" class='btn btn-primary btn-lg' value="Submit">Submit</button>
+      </div>
+    </div>
+    
 </form>
 <div>
     {{msg}}

@@ -31,11 +31,11 @@ ub.service('fbauthFact',["$http","$log","$rootScope","$q","$cookies",function($h
             params: response
             }).then(function successCallback(srresponse){
                     self.msg=srresponse.data;    
-                    $log.log("http get request success: "+self.msg);
+                    //$log.log("http get request success: "+self.msg);
                     tAdef.resolve('http get request success');
                     },
                     function errorCallback(srresponse){
-                        $log.log("http get request failure:"+srresponse.data);
+                        //$log.log("http get request failure:"+srresponse.data);
                         tAdef.reject('http get request failure');
                     });
              
@@ -58,11 +58,9 @@ ub.service('fbauthFact',["$http","$log","$rootScope","$q","$cookies",function($h
                 
                 self.testAPI().then(
                  function(resolved){
-                     $log.log('testAPI() - success');
-                    deferred.resolve('connected');    
+                     deferred.resolve('connected');    
                  },
                 function(rejected){
-                    $log.log('testAPI() - failure');
                     deferred.reject('error connecting');
                 });
                  
@@ -104,7 +102,7 @@ ub.service('fbauthFact',["$http","$log","$rootScope","$q","$cookies",function($h
     }
 }]);
 
-ub.service('formsub',["$http","$log","$q",function($http,$log,$q){
+ub.service('formsub',["$http","$log","$q","$timeout",function($http,$log,$q,$timeout){
     var user={};
     var self=this;
     
@@ -118,7 +116,7 @@ ub.service('formsub',["$http","$log","$q",function($http,$log,$q){
             }).then(
                     function successCallback(srresponse){
                     self.msg=srresponse.data;    
-                    $log.log("http get request success: "+self.msg);
+                    $log.log("Posted Object: ",srresponse.config.params);
                     fsdef.resolve(self.msg);
                     },
 
@@ -132,18 +130,22 @@ ub.service('formsub',["$http","$log","$q",function($http,$log,$q){
         
     };//submit
     
-    self.getprof=function(){
+    self.getprof=function(user){
+        var deferred = $q.defer();
         $http({
             method:"GET",
-            url:"http://localhost:3000/api/getprof"
+            url:"http://localhost:3000/api/getprof",
+            params: user
         }).then(function successCallback(srresponse){
-                $log.log("get user profile - Success");
-                return srresponse;
+                
+                deferred.resolve(srresponse.data);                
                 },
                 function errorCallback(srresponse){
-                $log.log("get user profile - Failure");
-                self.msg="get user profile - Failure";
+                $log.log("get user profile - Failure: "+srresponse.statusText);
+                deferred.reject(srresponse.data);
                 }
             );//$http
-    }
+        
+        return deferred.promise;
+    }//getprof
 }]);

@@ -37,33 +37,40 @@ module.exports = function (app){
 	//section to Update user profile information
 	app.post('/api/updprof*',function(req,res){
 		var query = {email: req.query.email};
-		console.log('query:'+req.query.email);
+		console.log('query object:',req.query);
         ubModel.findOneAndUpdate(query,
 			{
-				fname : req.body.fname,
-				lname : req.body.lname,
-				phone : req.body.cell,
-				add1 : req.body.add1 ,
-                add2 : req.body.add2, 
-			    city : req.body.city,
-				pincode : req.body.pin
+				fname : req.query.fname,
+				lname : req.query.lname,
+				phone : req.query.phone,
+				add1 : req.query.add1,
+                add2 : req.query.add2, 
+			    city : req.query.city,
+				pincode : req.query.pincode
 			},
 			function(err,usr){
 			if(err) throw err;
-			res.send(usr);
+                res.send('User Profile Updated!!');
 		});
 	});
 	
 	//section to Read user profile information
 	app.get('/api/getprof*',function(req,res){
-		
+		console.log('In getprofile api');
+        console.log('req.query :',req.query);
+        
 		ubModel.findOne({email: req.query.email},function(err,usr){
 			if(err) throw err;
 			if (usr.length == 0){
-				res.send('Invalid user');
+				console.log('Invalid user');
+                err.msg='Invalid user';
+                res.send(err);
 			}
 			else {
-				res.send(usr);
+				usr.msg='<b>Profile of {{user.fname}}. click <a href="#/uprofile">here</a> to edit</b>';
+                console.log('usr:',usr);
+                res.send(usr);
+                
 			}
 		});
 		
