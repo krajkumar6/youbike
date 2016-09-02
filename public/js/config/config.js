@@ -33,6 +33,18 @@ ub.config(function($routeProvider){
         authenticated: true
     })
     
+    .when('/vbike',{
+		templateUrl: '../pages/vbike.htm',
+		controller:'bikectrl',
+        authenticated: true
+    })
+    
+    .when('/mbike',{
+		templateUrl: '../pages/mbike.htm',
+		controller:'bikectrl',
+        authenticated: true
+    })
+    
       .when('/uprofile',{
 		templateUrl: '../pages/uprofile.htm',
 		controller:'profctrl',
