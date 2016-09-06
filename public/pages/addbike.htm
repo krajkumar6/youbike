@@ -4,17 +4,17 @@
 </div>    
 </div>
 <div class='container'>
-<form class="form-horizontal" name='profile' ng-submit="submit()" >
+<form class="form-horizontal" name='profile' ng-submit="subbike()" >
     
     <div class="form-group">
       <label class="control-label col-md-4" for="make">Your Bike :</label>
       <div class="col-md-4">
-        <select class="form-control" id="bmake" ng-model="models" ng-options="bmake for (bmake,bmodels) in bmakes" placeholder="Bike Make">
+        <select class="form-control" id="bmake" ng-model="bike.make" ng-options="bmake for (bmake,bmodels) in bmakes" placeholder="Bike Make">
             <option value=''>select</option>
           </select>
       </div>
       <div class="col-md-4">
-        <select class="form-control" id="bmodel" ng-model="model" ng-options="bmodel for bmodel in bmodels" placeholder="Model">
+        <select class="form-control" id="bmodel" ng-model="bike.model" ng-options="bmodel for bmodel in bmodels" placeholder="Model">
             <option value=''>select</option>
           </select>
         </div>
@@ -22,14 +22,14 @@
     <div class="form-group">
       <label class="control-label col-md-4" for="year">Year :</label>
       <div class="col-md-4">
-        <select class="form-control" id="byear" ng-model="year" ng-options="year for year in year" placeholder="Bike Year">
+        <select class="form-control" id="byear" ng-model="bike.year" ng-options="year for year in year" placeholder="Bike Year">
       </div>
     </div>
     
      <div class="form-group">
       <label class="control-label col-md-4" for="regno">Registration No :</label>
       <div class="col-md-4">
-        <input type="text" class="form-control" id="regno" ng-model="regno" placeholder="Registration Number">
+        <input type="text" class="form-control" id="regno" ng-model="bike.regno" placeholder="Registration Number">
       </div>
     </div>
  

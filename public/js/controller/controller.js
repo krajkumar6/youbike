@@ -97,16 +97,17 @@ ub.controller('bikectrl',["$scope","fbauthFact","$log","bike",function($scope,fb
     $scope.bikes ={};//bikes object to store bikes retrieved for a user
     $scope.bike ={};//bike object to submit details of bike
     
-    var authobj = fbauthFact.getResponseobj();
+    $scope.usr = fbauthFact.getResponseobj();
     
-    bike.getbikes(authobj).then(function(response){
-        $bikes = response;
+    bike.getbikes($scope.usr).then(function(response){
+        $scope.bikes = response;
     },function(reason){
-        $msg = reason;
+        $scope.msg = reason;
     });//getbikes
     
     $scope.subbike = function(){
-        bike.subbike().then(function(response){
+        $scope.bike.email = $scope.usr.email;
+        bike.subbike($scope.bike).then(function(response){
            $scope.msg= response;
         },function(reason){
             $scope.msg=reason;

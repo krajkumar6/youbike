@@ -14,12 +14,12 @@ module.exports = function(app){
 			if(bikes.length==0){
 				//create a bike
 				ubBike.create({ 
-					brand: req.query,
-					model: 'Activa',
-					year : '2012',
-					kms  : 3000,
-					regno : 'TN02M3488',
-					email : req.params.uid
+					brand: req.query.make,
+					model: req.query.model,
+					year : req.query.year,
+					kms  : 0,
+					regno : req.query.regno,
+					email : req.query.email
 				},function(err,results){
 					if(err) throw err;
 					res.send(results);

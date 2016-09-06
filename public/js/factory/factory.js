@@ -150,10 +150,10 @@ ub.service('formsub',["$http","$log","$q","$timeout",function($http,$log,$q,$tim
     }//getprof
 }]);
 
-ub.service('bike',['$http','fbauthfact','$log','$q',function($http,fbauthfact,$log,$q){
+ub.service('bike',['$http','fbauthFact','$log','$q',function($http,fbauthFact,$log,$q){
     var user={};
     var bike={};
-    var email = fb;
+    
     this.getbikes = function(user){
         var deferred = $q.defer();
         $http({
