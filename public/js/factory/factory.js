@@ -149,3 +149,41 @@ ub.service('formsub',["$http","$log","$q","$timeout",function($http,$log,$q,$tim
         return deferred.promise;
     }//getprof
 }]);
+
+ub.service('bike',['$http','fbauthfact','$log','$q',function($http,fbauthfact,$log,$q){
+    var user={};
+    var bike={};
+    var email = fb;
+    this.getbikes = function(user){
+        var deferred = $q.defer();
+        $http({
+            method:"GET",
+            url:"http://localhost:3000/api/getbike",
+            params: user
+        }).then(function successCallback(srresponse){
+            deferred.resolve(srresponse.data);
+        }, 
+            function failureCallback(srresponse){
+            $log.error("get bikes http call failed ",srresponse.data);
+            deferred.reject(srresponse.data);
+        });//$http
+        return deferred.promise;
+    };//getbikes
+    
+    this.subbike = function(bike){
+        var deferred = $q.defer();
+        $http({
+            method:"POST",
+            url:"http://localhost:3000/api/regbike",
+            params: bike
+        }
+        ).then(function sucessCallback(srresponse){
+            deferred.resolve(srresponse.data);
+        },
+               function failureCallback(srresponse){
+            deferred.resolve(srresponse.data);
+        });//$http
+        return deferred.promise;
+    };//subbike
+    
+}]);

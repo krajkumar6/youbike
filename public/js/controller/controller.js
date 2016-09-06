@@ -90,3 +90,29 @@ ub.controller('apctrl',["$scope","fbauthFact","$log",function($scope,fbauthFact,
     $scope.name = fbresponse.first_name;
     
 }]);
+
+ub.controller('bikectrl',["$scope","fbauthFact","$log","bike",function($scope,fbauthFact,$log,bike){
+    $log.log("In bike controller");
+    $scope.msg = "";
+    $scope.bikes ={};//bikes object to store bikes retrieved for a user
+    $scope.bike ={};//bike object to submit details of bike
+    
+    var authobj = fbauthFact.getResponseobj();
+    
+    bike.getbikes(authobj).then(function(response){
+        $bikes = response;
+    },function(reason){
+        $msg = reason;
+    });//getbikes
+    
+    $scope.subbike = function(){
+        bike.subbike().then(function(response){
+           $scope.msg= response;
+        },function(reason){
+            $scope.msg=reason;
+        });
+    };//subbike
+    
+    $scope.year = ['2000','2001','2002','2003','2004','2005','2006','2007','2008','2009','2010','2011','2012','2013','2014','2015','2016'];
+    
+}]);
