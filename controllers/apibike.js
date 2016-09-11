@@ -48,8 +48,8 @@ module.exports = function(app){
     
 	//section to remove a bike
 	
-	app.delete('/api/delbike/:reg',function(req,res){
-		ubBike.remove({regno:req.params.reg},function(err,results){
+	app.delete('/api/delbike/*',function(req,res){
+		ubBike.remove({regno:req.query.regno},function(err,results){
 			if(err) throw err;
 			 if(results.result.n==0)
 				 {

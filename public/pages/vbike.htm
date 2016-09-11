@@ -8,6 +8,7 @@
 </div> 
 </div>
 <div class='container'>
+<div class='table-responsive'>
 <table class='table table-hover'>
     <thead>
         <tr>
@@ -21,16 +22,21 @@
     </thead>
     <tbody>
         <tr ng-repeat="x in bikes">
-            <td>$index+1</td>
-            <td>x.make</td>
-            <td>x.regno</td>
-            <td>x.model</td>
-            <td>x.year</td>
-            <td>?</td>
+            <td>{{$index+1}}</td>
+            <td>{{x.brand}}</td>
+            <td>{{x.regno}}</td>
+            <td>{{x.model}}</td>
+            <td>{{x.year}}</td>
+            <td>
+                <button type="button" ng-click="delbike($index)" class="btn btn-default btn-sm">
+                <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                </button>
+            </td>
         </tr>    
             
     </tbody>
 </table>
+</table>
     
 </div>
-</div>
+</div>  

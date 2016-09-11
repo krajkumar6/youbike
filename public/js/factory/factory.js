@@ -153,7 +153,7 @@ ub.service('formsub',["$http","$log","$q","$timeout",function($http,$log,$q,$tim
 ub.service('bike',['$http','fbauthFact','$log','$q',function($http,fbauthFact,$log,$q){
     var user={};
     var bike={};
-    
+    //retrieve bikes
     this.getbikes = function(user){
         var deferred = $q.defer();
         $http({
@@ -170,6 +170,22 @@ ub.service('bike',['$http','fbauthFact','$log','$q',function($http,fbauthFact,$l
         return deferred.promise;
     };//getbikes
     
+    //delete bike
+    
+    this.delbike = function(bike){
+        var deferred = $q.defer();
+        $http({
+            method:"DELETE",
+            url:"http://localhost:3000/api/delbike",
+            params: bike
+        }).then(function successCallback(srresponse){
+            deferred.resolve(srresponse.data);
+        },function failureCallback(srresponse){
+            deferred.reject(srresponse.data);
+        });
+        return deferred.promise;
+    };//delbike
+    
     this.subbike = function(bike){
         var deferred = $q.defer();
         $http({
@@ -181,7 +197,7 @@ ub.service('bike',['$http','fbauthFact','$log','$q',function($http,fbauthFact,$l
             deferred.resolve(srresponse.data);
         },
                function failureCallback(srresponse){
-            deferred.resolve(srresponse.data);
+            deferred.reject(srresponse.data);
         });//$http
         return deferred.promise;
     };//subbike

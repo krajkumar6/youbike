@@ -94,8 +94,10 @@ ub.controller('apctrl',["$scope","fbauthFact","$log",function($scope,fbauthFact,
 ub.controller('bikectrl',["$scope","fbauthFact","$log","bike",function($scope,fbauthFact,$log,bike){
     $log.log("In bike controller");
     $scope.msg = "";
-    $scope.bikes ={};//bikes object to store bikes retrieved for a user
+    $scope.bikes =[];//bikes array to store bikes retrieved for a user
     $scope.bike ={};//bike object to submit details of bike
+    //var bike ={};
+    var idx;
     
     $scope.usr = fbauthFact.getResponseobj();
     
@@ -104,6 +106,15 @@ ub.controller('bikectrl',["$scope","fbauthFact","$log","bike",function($scope,fb
     },function(reason){
         $scope.msg = reason;
     });//getbikes
+    
+    $scope.delbike = function(idx){
+        $scope.bikes.splice(idx,1);
+        bike.delbike($scope.bikes[idx]).then(function(response){
+          $scope.msg = response;
+        },function(reason){
+            $scope.msg = reason;
+        });
+    };
     
     $scope.subbike = function(){
         $scope.bike.email = $scope.usr.email;
