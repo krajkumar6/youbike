@@ -108,10 +108,9 @@ ub.controller('bikectrl',["$scope","fbauthFact","$log","bike",function($scope,fb
     });//getbikes
     
     $scope.delbike = function(idx){
-        
+        $scope.bikes.splice(idx,1);
         bike.delbike($scope.bikes[idx]).then(function(response){
-            $scope.bikes.splice(idx,1);
-            $scope.msg = response;
+          $scope.msg = response;
         },function(reason){
             $scope.msg = reason;
         });

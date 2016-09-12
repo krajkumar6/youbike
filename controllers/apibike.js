@@ -48,7 +48,7 @@ module.exports = function(app){
     
 	//section to remove a bike
 	
-	app.delete('/api/delbike*',function(req,res){
+	app.delete('/api/delbike/*',function(req,res){
 		ubBike.remove({regno:req.query.regno},function(err,results){
 			if(err) throw err;
 			 if(results.result.n==0)
@@ -57,7 +57,7 @@ module.exports = function(app){
 				 }
 				else
 				{
-				res.send(req.query.regno+ ' deleted!!');
+				res.send('Success');
 				}
 			});
 		});
