@@ -39,8 +39,8 @@ ub.config(function($routeProvider){
         authenticated: true
     })
     
-    .when('/mbike',{
-		templateUrl: '../pages/mbike.htm',
+    .when('/addbike',{
+		templateUrl: '../pages/addbike.htm',
 		controller:'bikectrl',
         authenticated: true
     })

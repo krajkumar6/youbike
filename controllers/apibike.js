@@ -7,14 +7,14 @@ module.exports = function(app){
 	
 	//section to register bike
 	
-	app.post('/api/regbike/*',function(req,res){
+	app.post('/api/regbike*',function(req,res){
 		ubBike.find({email:req.query.email,regno:req.query.regno},
 		function(err,bikes){
             if(err) throw err;
 			if(bikes.length==0){
 				//create a bike
 				ubBike.create({ 
-					brand: req.query.make,
+					brand: req.query.models,
 					model: req.query.model,
 					year : req.query.year,
 					kms  : 0,
@@ -22,12 +22,13 @@ module.exports = function(app){
 					email : req.query.email
 				},function(err,results){
 					if(err) throw err;
-					res.send(results);
+					console.log(results);
+                    res.send('Bike Registered');
 				});
 			}
 			else
 			{
-			 res.send('Same bike cannot be registered again');
+			 res.send('Bike already registered');
 			}
 		});
 	});

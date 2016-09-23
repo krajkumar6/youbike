@@ -3,19 +3,19 @@
     <div class='col-md-offset-4 col-md-8'><h3>Bikes</h3> </div>    
 </div>    
 </div>
-<div class='container'>
+
 <form class="form-horizontal" name='profile' ng-submit="subbike()" >
     
     <div class="form-group">
       <label class="control-label col-md-4" for="make">Your Bike :</label>
       <div class="col-md-4">
-        <select class="form-control" id="bmake" ng-model="bike.make" ng-options="bmake for (bmake,bmodels) in bmakes" placeholder="Bike Make">
-            <option value=''>select</option>
+        <select class="form-control" id="bmake" ng-model="bike.models" ng-options="make for (make,models) in makes" placeholder="Bike Make">
+            <option value=''>select make</option>
           </select>
       </div>
       <div class="col-md-4">
-        <select class="form-control" id="bmodel" ng-model="bike.model" ng-options="bmodel for bmodel in bmodels" placeholder="Model">
-            <option value=''>select</option>
+        <select class="form-control" id="bmodel" ng-model="bike.model" ng-options="model for model in bike.models" placeholder="Model">
+            <option value=''>select model</option>
           </select>
         </div>
     </div>
@@ -23,6 +23,8 @@
       <label class="control-label col-md-4" for="year">Year :</label>
       <div class="col-md-4">
         <select class="form-control" id="byear" ng-model="bike.year" ng-options="year for year in year" placeholder="Bike Year">
+             <option value=''>select year</option>
+          </select>
       </div>
     </div>
     
@@ -36,11 +38,11 @@
     <div class="form-group">
      
       <div class="col-md-offset-4 col-xs-offset-4 col-md-4 col-xs-4 text-center">
-        <button type="submit" class='btn btn-primary btn-lg' value="Submit">Submit</button>
+        <button type="submit" class='btn btn-primary btn-lg' value="Submit">Add</button>
       </div>
     </div>
     
 </form>
-<div>
-    {{msg}}
+<div class='row'>
+    <div class='col-md-offset-4 col-md-8'><h3>{{msg}}</h3> </div> 
 </div>
