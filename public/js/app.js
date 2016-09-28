@@ -1,4 +1,4 @@
-var ub = angular.module('ub',['ngRoute','ngCookies']);
+var ub = angular.module('ub',['ngMaterial','ngRoute','ngCookies']);
 
 ub.run([function($rootScope,$location,fbauthFact){
 

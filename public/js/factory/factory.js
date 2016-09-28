@@ -1,4 +1,4 @@
-ub.service('fbauthFact',["$http","$log","$rootScope","$q","$cookies",function($http,$log,$rootScope,$q,$cookies){
+ub.service('fbauthFact',["$http","$log","$q","$cookies",function($http,$log,$q,$cookies){
     
     this.isAuth=false;
     this.profpic=""
@@ -201,5 +201,61 @@ ub.service('bike',['$http','fbauthFact','$log','$q',function($http,fbauthFact,$l
         });//$http
         return deferred.promise;
     };//subbike
+    
+}]);
+
+ub.service('appo',['$http','$log','$q',function($http,$log,$q){
+    var user={};
+    var appo={};
+    //retrieve appos
+    this.getappos = function(user){
+        var deferred = $q.defer();
+        $http({
+            method:"GET",
+            url:"http://localhost:3000/api/vappos",
+            params: user
+        }).then(function successCallback(srresponse){
+            deferred.resolve(srresponse.data);
+        }, 
+            function failureCallback(srresponse){
+            $log.error("get appos http call failed ",srresponse.data);
+            deferred.reject(srresponse.data);
+        });//$http
+        return deferred.promise;
+    };//getappos
+    
+    //delete appointment
+    
+   this.delappo = function(appo){
+        var deferred = $q.defer();
+        $http({
+            method:"DELETE",
+            url:"http://localhost:3000/api/dappos",
+            params: appo
+        }).then(function successCallback(srresponse){
+            deferred.resolve(srresponse.data);
+        },function failureCallback(srresponse){
+            deferred.reject(srresponse.data);
+        });
+        return deferred.promise;
+    };//delappo
+    
+    
+    this.addappo = function(appo){
+        var deferred = $q.defer();
+        $http({
+            method:"POST",
+            url:"http://localhost:3000/api/cappos",
+            params: bike
+        }
+        ).then(function sucessCallback(srresponse){
+            deferred.resolve(srresponse.data);
+        },
+               function failureCallback(srresponse){
+            deferred.reject(srresponse.data);
+        });//$http
+        return deferred.promise;
+    };//addappo
+    
     
 }]);

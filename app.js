@@ -5,7 +5,7 @@ var config = require('./config');
 var setupController = require('./controllers/setupController.js');
 var apiController = require('./controllers/apiController.js');
 var apibike = require('./controllers/apibike.js');
-var orderController = require('./controllers/orderController.js');
+var appoController = require('./controllers/appoController.js');
 
 var port = process.env.PORT||3000;
 
@@ -24,5 +24,5 @@ mongoose.connect(config.getDBConnectionString());
 setupController(app);
 apiController(app);
 apibike(app);
-orderController(app);
+appoController(app);
 app.listen(port);

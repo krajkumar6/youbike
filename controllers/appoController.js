@@ -1,13 +1,13 @@
-var Orders = require('../models/ubOrders');
+var Appo = require('../models/ubAppo');
 var bodyParser = require('body-parser');
 
 module.exports = function(app){
 	app.use(bodyParser.json());
 	app.use(bodyParser.urlencoded({extended:true}));
 	
-	//section to retreive orders
-	app.get('/api/vorders/:uid',function(req,res){
-		Orders.find({email:req.params.uid},
+	//section to retreive appointments
+	app.get('/api/vappos*',function(req,res){
+		Appo.find({email:req.query.email},
 			function(err,results){
 			if(err) throw err;
 			 if(results.length==0)
@@ -21,10 +21,10 @@ module.exports = function(app){
 			});
 	});
 	
-	//section to create an order
+	//section to create an appointment
 	
-	app.post('/api/corder/:uid/:reg',function(req,res){
-		Orders.findOne({email:req.params.uid,regno:req.params.reg},
+	app.post('/api/cappos*',function(req,res){
+		Appo.findOne({email:req.params.uid,regno:req.params.reg},
 			function(err,results){
 			if(results!==null){
 				 res.send('Bike already has an appointment');
@@ -44,9 +44,9 @@ module.exports = function(app){
 		});
 	});
 	
-	//section to update an order
-	app.post('/api/uorder/:uid/:reg/:dt',function(req,res){
-		Orders.findOneAndUpdate({email:req.params.uid,regno:req.params.reg},
+	//section to update an appointment
+	app.post('/api/uappos*',function(req,res){
+		Appo.findOneAndUpdate({email:req.params.uid,regno:req.params.reg},
 				{servicedt : req.params.dt},
 								{new: true},
 				function(err,results){ 
@@ -58,9 +58,9 @@ module.exports = function(app){
 				
 	});
 	
-	//section to delete an order
-	app.delete('/api/dorder/:uid/:reg',function(req,res){
-		Orders.remove( {email:req.params.uid,regno:req.params.reg},
+	//section to delete an appointment
+	app.delete('/api/dappos*',function(req,res){
+		Appo.remove( {email:req.params.uid,regno:req.params.reg},
 					 function(err,results){
 					if(err) throw err;
 					 	if(results.result.n !== 0){

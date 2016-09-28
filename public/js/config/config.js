@@ -52,7 +52,7 @@ ub.config(function($routeProvider){
     })
 	
     .when('/appoint',{
-		templateUrl: '../pages/appoi.htm',
+		templateUrl: '../pages/vappo.htm',
 		controller:'apctrl',
         authenticated: true
 	})
