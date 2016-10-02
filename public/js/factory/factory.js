@@ -246,7 +246,7 @@ ub.service('appo',['$http','$log','$q',function($http,$log,$q){
         $http({
             method:"POST",
             url:"http://localhost:3000/api/cappos",
-            params: bike
+            params: appo
         }
         ).then(function sucessCallback(srresponse){
             deferred.resolve(srresponse.data);

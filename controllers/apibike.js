@@ -19,7 +19,7 @@ module.exports = function(app){
 					year : req.query.year,
 					kms  : 0,
 					regno : req.query.regno,
-					email : req.query.email
+					cust : req.query._id
 				},function(err,results){
 					if(err) throw err;
 					console.log(results);
@@ -39,8 +39,10 @@ module.exports = function(app){
         console.log('In getbike api');
         console.log('req.query :',req.query);
         var msg="";
-		ubBike.find({email:req.query.email},
-            function(err,bikes){
+		ubBike
+            .find({email:req.query.email})
+            .populate('cust','email')
+            .exec(function(err,bikes){
                   res.send(bikes);
                 if(err) throw err;
             });

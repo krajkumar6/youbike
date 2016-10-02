@@ -9,7 +9,7 @@ var Bikesch= new Schema(
 	year : String,
 	kms  : Number,
 	regno : String,
-	email : String
+	cust : { type: Number, ref: 'Customer' }
 }
 );
 

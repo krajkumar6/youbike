@@ -84,10 +84,12 @@ ub.controller('profctrl',["$scope","fbauthFact","formsub","$log","$timeout",func
     };//submit
 }]);
 
-ub.controller('apctrl',["$scope","fbauthFact","$log","appo",function($scope,fbauthFact,$log,appo){
+ub.controller('apctrl',["$scope","fbauthFact","$log","appo","bike",function($scope,fbauthFact,$log,appo,bike){
     $log.log("In Appointment controller");
     $scope.usr= fbauthFact.getResponseobj();
     $scope.appos = {};
+    $scope.newappo = {};
+    $scope.selected = {value: null};
     var idx;
         
     $scope.myDate = new Date();
@@ -97,15 +99,23 @@ ub.controller('apctrl',["$scope","fbauthFact","$log","appo",function($scope,fbau
        $scope.myDate.getDate());
     $scope.maxDate = new Date(
        $scope.myDate.getFullYear(),
-       $scope.myDate.getMonth() + 2,
+       $scope.myDate.getMonth() + 1,
        $scope.myDate.getDate());
     $scope.onlyWeekendsPredicate = function(date) {
        var day = date.getDay();
-       return day === 0 || day === 6;
+       return day === 0;
      }//onlyWeekendsPredicate    
     
     appo.getappos($scope.usr).then(function(response){
         $scope.appos = response;
+    },function(reason){
+        $scope.msg = reason;
+    });//getappos
+    
+    bike.getbikes($scope.usr).then(function(response){
+        $scope.bikes = response;
+        $scope.newappo = response;
+        $scope.newappo.email = $scope.usr.email;
     },function(reason){
         $scope.msg = reason;
     });//getbikes
@@ -119,15 +129,16 @@ ub.controller('apctrl',["$scope","fbauthFact","$log","appo",function($scope,fbau
         });        
     };
     
-    $scope.addappo = function(){
-        $scope.appos.email = $scope.usr.email;
-        appo.addappo($scope.appos).then(function(response){
+    $scope.addappo = function(idx){
+        //$scope.newappo.email = $scope.usr.email;
+        appo.addappo($scope.newappo[idx]).then(function(response){
            $scope.msg = response; 
         },function(reason){
             $scope.msg = reason;
         });
     };
 }]);
+
 
 ub.controller('bikectrl',["$scope","fbauthFact","$log","bike",function($scope,fbauthFact,$log,bike){
     $log.log("In bike controller");

@@ -24,20 +24,22 @@ module.exports = function(app){
 	//section to create an appointment
 	
 	app.post('/api/cappos*',function(req,res){
-		Appo.findOne({email:req.params.uid,regno:req.params.reg},
+		Appo.findOne({email:req.query.email,regno:req.query.regno},
 			function(err,results){
 			if(results!==null){
 				 res.send('Bike already has an appointment');
 				}
 				else{
-					Orders.create({
-					email:	req.params.uid,
-					regno: 	req.params.reg,
-					status : 'Booked',
-					servicedt: "2016-08-16"
+					Appo.create({
+					appoidt:req.query.appoidt,
+                    reqdt:new Date(),
+                    status:'Booked',
+                    bike:req.query._id,
+                    cust:req.query.email
+					
 					},function(err,results){
 						if(err) throw err
-						res.send(results);
+						res.send('Appointment Booked.Thank you!!');
 					})
 				}
 						
@@ -60,11 +62,11 @@ module.exports = function(app){
 	
 	//section to delete an appointment
 	app.delete('/api/dappos*',function(req,res){
-		Appo.remove( {email:req.params.uid,regno:req.params.reg},
+		Appo.remove( {email:req.query.email,regno:req.query.regno},
 					 function(err,results){
 					if(err) throw err;
 					 	if(results.result.n !== 0){
-						res.send(results);		
+						res.send('appointment deleted');		
 						}
 						else
 						{

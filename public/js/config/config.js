@@ -56,6 +56,11 @@ ub.config(function($routeProvider){
 		controller:'apctrl',
         authenticated: true
 	})
+    .when('/addappo',{
+		templateUrl: '../pages/addappo.htm',
+		controller:'apctrl',
+        authenticated: true
+	})
     
 });
 
