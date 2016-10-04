@@ -19,7 +19,7 @@ module.exports = function(app){
 					year : req.query.year,
 					kms  : 0,
 					regno : req.query.regno,
-					cust : req.query._id
+					cust : req.query.usr_id
 				},function(err,results){
 					if(err) throw err;
 					console.log(results);
@@ -40,7 +40,7 @@ module.exports = function(app){
         console.log('req.query :',req.query);
         var msg="";
 		ubBike
-            .find({email:req.query.email})
+            .find({cust:req.query.usr_id})
             .populate('cust','email')
             .exec(function(err,bikes){
                   res.send(bikes);
@@ -52,7 +52,8 @@ module.exports = function(app){
 	//section to remove a bike
 	
 	app.delete('/api/delbike*',function(req,res){
-		ubBike.remove({regno:req.query.regno},function(err,results){
+		ubBike.remove({regno:req.query.regno,cust:req.query.usr_id},
+            function(err,results){
 			if(err) throw err;
 			 if(results.result.n==0)
 				 {

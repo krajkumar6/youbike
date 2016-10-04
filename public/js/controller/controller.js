@@ -3,6 +3,7 @@ ub.controller('mainController',['$scope','$log','$http','fbauthFact','$location'
     $scope.profpic="";
     $scope.msg="";
     $scope.isAuth = false;
+    $scope.usr ={};
     
 	switch($routeParams.id)
 	{
@@ -30,7 +31,8 @@ ub.controller('mainController',['$scope','$log','$http','fbauthFact','$location'
         fbauthFact.fblogin().then(
                 function(response){
                 $scope.isAuth = fbauthFact.isAuth;
-                $scope.msg= fbauthFact.msg;
+                $scope.usr =response;  
+                $scope.msg= response.msg;
                 $scope.profpic=fbauthFact.profpic;
                 //$scope.accesstoken=fbauthFact.accesstoken;
                 //$scope.$apply();
@@ -57,19 +59,14 @@ ub.controller('mainController',['$scope','$log','$http','fbauthFact','$location'
     
 }]);//mainController
 
-ub.controller('orderctrl',["$scope","fbauthFact","$log",function($scope,fbauthFact,$log){
-    $log.log("In Order controller");
-    var fbresponse = fbauthFact.getResponseobj();
-    $scope.name = fbresponse.first_name;
-    
-}]);
 
 ub.controller('profctrl',["$scope","fbauthFact","formsub","$log","$timeout",function($scope,fbauthFact,formsub,$log,$timeout){
     $log.log("In Profile controller");
     $scope.msg = "";
     $scope.usr ={};
-   var fbresponse = fbauthFact.getResponseobj();
-   formsub.getprof(fbresponse).then(function(response){
+   var user = fbauthFact.getResponseobj();
+   
+    formsub.getprof(user).then(function(response){
         $scope.usr = response;
         $log.log('$scope.usr',$scope.usr);
     });
@@ -91,6 +88,7 @@ ub.controller('apctrl',["$scope","fbauthFact","$log","appo","bike",function($sco
     $scope.newappo = {};
     $scope.selected = {value: null};
     var idx;
+    
         
     $scope.myDate = new Date();
     $scope.minDate = new Date(
@@ -121,6 +119,7 @@ ub.controller('apctrl',["$scope","fbauthFact","$log","appo","bike",function($sco
     });//getbikes
     
     $scope.delappo=function(idx){
+        $scope.appos[idx].usr_id = $scope.usr._id;
         appo.delappo($scope.appos[idx]).then(function(response){
             $scope.appos.splice(idx,1);
             $scope.msg = response;
@@ -130,7 +129,7 @@ ub.controller('apctrl',["$scope","fbauthFact","$log","appo","bike",function($sco
     };
     
     $scope.addappo = function(idx){
-        //$scope.newappo.email = $scope.usr.email;
+        $scope.newappo[idx].usr_id = $scope.usr._id;
         appo.addappo($scope.newappo[idx]).then(function(response){
            $scope.msg = response; 
         },function(reason){
@@ -138,7 +137,6 @@ ub.controller('apctrl',["$scope","fbauthFact","$log","appo","bike",function($sco
         });
     };
 }]);
-
 
 ub.controller('bikectrl',["$scope","fbauthFact","$log","bike",function($scope,fbauthFact,$log,bike){
     $log.log("In bike controller");
@@ -150,6 +148,7 @@ ub.controller('bikectrl',["$scope","fbauthFact","$log","bike",function($scope,fb
     var idx;
     
     $scope.usr = fbauthFact.getResponseobj();
+    $scope.bike.usr_id = $scope.usr._id;
     
     bike.getbikes($scope.usr).then(function(response){
         $scope.bikes = response;
@@ -158,7 +157,7 @@ ub.controller('bikectrl',["$scope","fbauthFact","$log","bike",function($scope,fb
     });//getbikes
     
     $scope.delbike = function(idx){
-        
+        $scope.bikes[idx].usr_id = $scope.usr._id;
         bike.delbike($scope.bikes[idx]).then(function(response){
             $scope.bikes.splice(idx,1);
             $scope.msg = response;
@@ -168,7 +167,7 @@ ub.controller('bikectrl',["$scope","fbauthFact","$log","bike",function($scope,fb
     };
     
     $scope.subbike = function(){
-        $scope.bike.email = $scope.usr.email;
+        
         bike.subbike($scope.bike).then(function(response){
            $scope.msg= response;
         },function(reason){

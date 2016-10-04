@@ -4,61 +4,72 @@ ub.service('fbauthFact',["$http","$log","$q","$cookies",function($http,$log,$q,$
     this.profpic=""
     this.fbresponse={};
     this.msg="";
+    this.userobj = {};
     var self=this;
     
-    self.testAPI =function() {
+    self.userCrea =function() {
         var tAdef = $q.defer();
         
         FB.api('/me',{fields: 'first_name,last_name,gender,email,picture'}, function(response) {
+            if(response.first_name == null || response.first_name.length ==0){
+                response.first_name = response.email;
+            }
             self.fbresponse = response;
             self.profpic = response.picture.data.url;
             self.isAuth=true;
             self.accesstoken = FB.getAuthResponse().accessToken;
             $cookies.put('acctoken',self.accesstoken);
-            $cookies.putObject('resobj',response);
-           
+                   
             document.getElementById('status').innerHTML =
             'Thanks for logging in, ' + response.first_name + '!';
             document.getElementById('profpic').innerHTML =
             "<img src='" + response.picture.data.url + "'>";
             
-            
-
-                        
-            $http({
-            method:"GET",
-            url: "http://localhost:3000/api/creaprof",
-            params: response
-            }).then(function successCallback(srresponse){
-                    self.msg=srresponse.data;    
-                    //$log.log("http get request success: "+self.msg);
-                    tAdef.resolve('http get request success');
-                    },
-                    function errorCallback(srresponse){
-                        //$log.log("http get request failure:"+srresponse.data);
-                        tAdef.reject('http get request failure');
-                    });
-             
-            
-            
+              $http({
+                method: 'GET',
+                url:"http://localhost:3000/api/getprof",
+                param:response
+                }).then(function successCallback(srresponse){
+                  if(srresponse==null){
+                      //create a new user in db
+                      $http({
+                            method:"POST",
+                            url: "http://localhost:3000/api/creaprof",
+                            params: response
+                            }).then(function successCallback(srresponse){
+                                    self.userobj=srresponse.data;    
+                                    //$log.log("http get request success: "+self.msg);
+                                    $cookies.putObject('resobj',srresponse.data);
+                                    tAdef.resolve(self.userobj);
+                                    },
+                                    function errorCallback(srresponse){
+                                        //$log.log("http get request failure:"+srresponse.data);
+                                        tAdef.reject('http get request failure');
+                                    });
+                      
+                    }
+                  else{
+                      $cookies.putObject('resobj',srresponse.data);
+                  }
+                },function errorCallback(srresponse){
+                  $log.error("http request for user login failed");
+              });
+          
         });//FB.api call back function
         
         return tAdef.promise;
             
-    };//testAPI
+    };//userCrea
     
     this.fblogin =function(){
         var deferred = $q.defer();
         FB.login(function(response){
             
             if (response.status === 'connected') {
-              // Logged into your app and Facebook.
-            //    self.isAuth=true;
-              //  deferred.resolve('connected');     
-                
-                self.testAPI().then(
+                          
+                self.userCrea().then(
                  function(resolved){
-                     deferred.resolve('connected');    
+                     deferred.resolve(resolved);    
                  },
                 function(rejected){
                     deferred.reject('error connecting');

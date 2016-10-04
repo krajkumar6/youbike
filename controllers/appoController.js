@@ -7,8 +7,9 @@ module.exports = function(app){
 	
 	//section to retreive appointments
 	app.get('/api/vappos*',function(req,res){
-		Appo.find({email:req.query.email},
-			function(err,results){
+		Appo.find({cust:req.query.usr_id})
+            .populate('bike cust')
+            .exec(function(err,results){
 			if(err) throw err;
 			 if(results.length==0)
 			 {
@@ -35,7 +36,7 @@ module.exports = function(app){
                     reqdt:new Date(),
                     status:'Booked',
                     bike:req.query._id,
-                    cust:req.query.email
+                    cust:req.query.usr_id
 					
 					},function(err,results){
 						if(err) throw err

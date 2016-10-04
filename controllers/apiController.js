@@ -9,20 +9,20 @@ module.exports = function (app){
 	app.use(bodyParser.urlencoded({extended:true}));
 	
 	//section to signup user & authorize 
-	app.get('/api/creaprof*',function(req,res){
+	app.post('/api/creaprof*',function(req,res){
 		//var msg="In create profile API";
         console.log(req.query.email);
 		ubModel.find({email: req.query.email},function(err,usr){
 			if(err) throw err;
-			if (usr.length == 0){
+			if (usr == null){
 				console.log('user not available. will be created');
                     ubModel.create({email: req.query.email,fname:req.query.first_name,lname:req.query.last_name,gender:req.query.gender},
-                   function(err,result){
-                   if (err) throw err;
-                   msg = "User profile created for "+req.query.first_name;
-                   console.log(msg);
-                    res.send(msg);
-                    });
+                       function(err,result){
+                       if (err) throw err;
+                       result.msg = "User profile created for "+req.query.first_name;
+                       console.log(msg);
+                        res.send(result);
+                        });//create
 			}
 			else {
                 msg = "Welcome back "+ req.query.first_name + " !!";
@@ -59,15 +59,14 @@ module.exports = function (app){
 		console.log('In getprofile api');
         console.log('req.query :',req.query);
         
-		ubModel.findOne({email: req.query.email},function(err,usr){
+		ubModel.findOne({id: req.query._id},function(err,usr){
 			if(err) throw err;
-			if (usr.length == 0){
-				console.log('Invalid user');
-                err.msg='Invalid user';
-                res.send(err);
+			if (usr == null){
+				console.log('New User will be created');
+                res.send(null);
 			}
 			else {
-				usr.msg='<b>Profile of {{user.fname}}. click <a href="#/uprofile">here</a> to edit</b>';
+				
                 console.log('usr:',usr);
                 res.send(usr);
                 
