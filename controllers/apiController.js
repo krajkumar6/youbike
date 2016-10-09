@@ -1,4 +1,4 @@
-var ubModel = require('../models/ubModel.js');
+var ubCust = require('../models/ubCust.js');
 var bodyParser = require('body-parser');
 
 var guestmenu =['Services','Contact','About','Register/Login','Appointments'];
@@ -7,38 +7,42 @@ var usermenu=['Profile',' Appointments','Orders','About' ,'Contact','Services','
 module.exports = function (app){
 	app.use(bodyParser.json());
 	app.use(bodyParser.urlencoded({extended:true}));
-	
-	//section to signup user & authorize 
-	app.post('/api/creaprof*',function(req,res){
-		//var msg="In create profile API";
-        console.log(req.query.email);
-		ubModel.find({email: req.query.email},function(err,usr){
+
+    //check profile api to check whether user profile exists or not using fb response object.if it exists return profile otherwise create profile
+    app.get('/api/getprofauth*',function(req,res){
+		console.log('In getprofile authentication api');
+        console.log('req.query :',req.query);
+        
+		ubCust.findOne({email: req.query.email},function(err,usr){
 			if(err) throw err;
 			if (usr == null){
-				console.log('user not available. will be created');
-                    ubModel.create({email: req.query.email,fname:req.query.first_name,lname:req.query.last_name,gender:req.query.gender},
+				console.log('New User will be created');
+                
+                ubCust.create({email: req.query.email,fname:req.query.first_name,lname:req.query.last_name,gender:req.query.gender},
                        function(err,result){
                        if (err) throw err;
                        result.msg = "User profile created for "+req.query.first_name;
-                       console.log(msg);
+                       console.log(result.msg);
                         res.send(result);
                         });//create
 			}
 			else {
-                msg = "Welcome back "+ req.query.first_name + " !!";
-                console.log(msg);
-                res.send(msg);
+				usr.msg = "Welcome back "+ usr.fname + " !!";
+                console.log('usr:',usr);
+                res.send(usr);                
 			}
-            
 		});
-		 
+		
 	});
+    
 	
 	//section to Update user profile information
 	app.post('/api/updprof*',function(req,res){
-		var query = {email: req.query.email};
+        console.log("In update profile api");
+		var query = {_id: req.query._id};
 		console.log('query object:',req.query);
-        ubModel.findOneAndUpdate(query,
+        console.log('query',query);
+        ubCust.findOneAndUpdate(query,
 			{
 				fname : req.query.fname,
 				lname : req.query.lname,
@@ -50,16 +54,17 @@ module.exports = function (app){
 			},
 			function(err,usr){
 			if(err) throw err;
-                res.send('User Profile Updated!!');
+            usr.msg="User Profile Updated!!";
+            res.send(usr);
 		});
 	});
 	
 	//section to Read user profile information
-	app.get('/api/getprof*',function(req,res){
+	/*app.get('/api/getprof*',function(req,res){
 		console.log('In getprofile api');
         console.log('req.query :',req.query);
         
-		ubModel.findOne({id: req.query._id},function(err,usr){
+		ubCust.findOne({id: req.query._id},function(err,usr){
 			if(err) throw err;
 			if (usr == null){
 				console.log('New User will be created');
@@ -73,6 +78,6 @@ module.exports = function (app){
 			}
 		});
 		
-	});
+	});*/
 	
 };

@@ -25,13 +25,20 @@ ub.service('fbauthFact',["$http","$log","$q","$cookies",function($http,$log,$q,$
             document.getElementById('profpic').innerHTML =
             "<img src='" + response.picture.data.url + "'>";
             
+            $log.log('response object',response);
+            
               $http({
                 method: 'GET',
-                url:"http://localhost:3000/api/getprof",
-                param:response
+                url:"http://localhost:3000/api/getprofauth",
+                params:response
                 }).then(function successCallback(srresponse){
-                  if(srresponse==null){
+                  
+                  self.userobj=srresponse.data;    
+                  $cookies.putObject('usrobj',srresponse.data);
+                  tAdef.resolve(self.userobj);
+                  /*if(srresponse==null){
                       //create a new user in db
+                      $log.info("Creating new user in db");
                       $http({
                             method:"POST",
                             url: "http://localhost:3000/api/creaprof",
@@ -50,9 +57,10 @@ ub.service('fbauthFact',["$http","$log","$q","$cookies",function($http,$log,$q,$
                     }
                   else{
                       $cookies.putObject('resobj',srresponse.data);
-                  }
+                  } */
                 },function errorCallback(srresponse){
                   $log.error("http request for user login failed");
+                  tAdef.reject('http get request failure');
               });
           
         });//FB.api call back function
@@ -72,7 +80,7 @@ ub.service('fbauthFact',["$http","$log","$q","$cookies",function($http,$log,$q,$
                      deferred.resolve(resolved);    
                  },
                 function(rejected){
-                    deferred.reject('error connecting');
+                    deferred.reject(rejected);
                 });
                  
             } else if (response.status === 'not_authorized') {
@@ -108,12 +116,12 @@ ub.service('fbauthFact',["$http","$log","$q","$cookies",function($http,$log,$q,$
         return acctoken;
     }
     this.getResponseobj=function(){
-        var resobj = $cookies.getObject('resobj');
+        var resobj = $cookies.getObject('usrobj');
         return resobj;
     }
 }]);
 
-ub.service('formsub',["$http","$log","$q","$timeout",function($http,$log,$q,$timeout){
+ub.service('formsub',["$http","$log","$q","$timeout","$cookies",function($http,$log,$q,$timeout,$cookies){
     var user={};
     var self=this;
     
@@ -126,22 +134,21 @@ ub.service('formsub',["$http","$log","$q","$timeout",function($http,$log,$q,$tim
             params: user
             }).then(
                     function successCallback(srresponse){
-                    self.msg=srresponse.data;    
                     $log.log("Posted Object: ",srresponse.config.params);
-                    fsdef.resolve(self.msg);
+                    $cookies.putObject('usrobj',srresponse.data);
+                    fsdef.resolve(srresponse);
                     },
 
                     function errorCallback(srresponse){
-                    self.msg=srresponse.statusText;
-                    $log.log("http get request failure:"+self.msg);
-                    fsdef.reject(self.msg);
+                    $log.log("http get request failure:"+srresponse.msg);
+                    fsdef.reject(srresponse);
                     }
                 );//$http
         return fsdef.promise;
         
     };//submit
     
-    self.getprof=function(user){
+   /* self.getprof=function(user){
         var deferred = $q.defer();
         $http({
             method:"GET",
@@ -158,7 +165,7 @@ ub.service('formsub',["$http","$log","$q","$timeout",function($http,$log,$q,$tim
             );//$http
         
         return deferred.promise;
-    }//getprof
+    }//getprof*/
 }]);
 
 ub.service('bike',['$http','fbauthFact','$log','$q',function($http,fbauthFact,$log,$q){

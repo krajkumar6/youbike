@@ -7,15 +7,22 @@ module.exports = function(app){
 	
 	//section to retreive appointments
 	app.get('/api/vappos*',function(req,res){
-		Appo.find({cust:req.query.usr_id})
-            .populate('bike cust')
+		console.log("In view appointment api");
+        Appo.find({cust:req.query._id})
+            .populate({
+            path : 'bike',
+            select: 'brand model regno'
+        })
+            //.populate('cust')
             .exec(function(err,results){
 			if(err) throw err;
-			 if(results.length==0)
+			 if(results.length==0 ||results.length==null)
 			 {
-				res.send('No orders available');	 
+				results.msg = 'No Appointments available';
+                res.send(results);	 
 			 }
 			 else{
+                console.log('appointment results',results);
 				res.send(results);	 
 			 }
 			
@@ -25,7 +32,7 @@ module.exports = function(app){
 	//section to create an appointment
 	
 	app.post('/api/cappos*',function(req,res){
-		Appo.findOne({email:req.query.email,regno:req.query.regno},
+		Appo.findOne({cust:req.query._id,regno:req.query.regno},
 			function(err,results){
 			if(results!==null){
 				 res.send('Bike already has an appointment');

@@ -1,4 +1,4 @@
-ub.controller('mainController',['$scope','$log','$http','fbauthFact','$location','$anchorScroll','$routeParams',function($scope,$log,$http,fbauthFact,$location,$anchorScroll,$routeParams){
+ub.controller('mainController',['$scope','$log','$http','fbauthFact','$location','$anchorScroll','$routeParams','bike',"$location","$window",function($scope,$log,$http,fbauthFact,$location,$anchorScroll,$routeParams,bike,$location,$window){
 	
     $scope.profpic="";
     $scope.msg="";
@@ -30,14 +30,26 @@ ub.controller('mainController',['$scope','$log','$http','fbauthFact','$location'
     $scope.fblogin= function(){
         fbauthFact.fblogin().then(
                 function(response){
+                    
                 $scope.isAuth = fbauthFact.isAuth;
-                $scope.usr =response;  
+                $scope.usr =fbauthFact.getResponseobj();  
                 $scope.msg= response.msg;
                 $scope.profpic=fbauthFact.profpic;
-                //$scope.accesstoken=fbauthFact.accesstoken;
-                //$scope.$apply();
                 
-                
+                bike.getbikes($scope.usr).then(function(response){
+                   
+                    if (response.length ==0)
+                    {
+                    $location.path('/addbike');//redirect to addbike screen    
+                    }
+                    else{
+                    $location.path('/appoint');//else redirect to view appointment screen
+                    }
+                },function(reason){
+                    $scope.msg1 = reason;
+                });//getbikes
+                  
+                            
             },function(reason){
                  $log.log("fblogin() - failure :Need to login to the application :"+reason);
             })
@@ -49,6 +61,8 @@ ub.controller('mainController',['$scope','$log','$http','fbauthFact','$location'
         fbauthFact.fblogout().then(
         function(response){
             $scope.msg=fbauthFact.msg;
+            $location.path('/');
+            $window.location.reload();
         },function(reason){
             $scope.msg="Logout Error!! Pls check Logs";
         }
@@ -60,35 +74,32 @@ ub.controller('mainController',['$scope','$log','$http','fbauthFact','$location'
 }]);//mainController
 
 
-ub.controller('profctrl',["$scope","fbauthFact","formsub","$log","$timeout",function($scope,fbauthFact,formsub,$log,$timeout){
-    $log.log("In Profile controller");
+ub.controller('profctrl',["$scope","fbauthFact","formsub","$log","$timeout","$location",function($scope,fbauthFact,formsub,$log,$timeout,$location){
+    //$log.log("In Profile controller");
     $scope.msg = "";
-    $scope.usr ={};
-   var user = fbauthFact.getResponseobj();
-   
-    formsub.getprof(user).then(function(response){
-        $scope.usr = response;
-        $log.log('$scope.usr',$scope.usr);
-    });
+    $scope.usr =fbauthFact.getResponseobj();
     
+
    $scope.submit = function(){
         
         formsub.submit($scope.usr).then(function(response){
-                $scope.msg=response;
+                $scope.msg=response.msg;
+                $scope.usr = fbauthFact.getResponseobj();
+                $log.log('$scope.usr',$scope.usr);
+                $location.path('/vprofile');
                 },function(reason){
-                $scope.msg=reason;
+                $scope.msg=reason.msg;
             });
     };//submit
 }]);
 
-ub.controller('apctrl',["$scope","fbauthFact","$log","appo","bike",function($scope,fbauthFact,$log,appo,bike){
+ub.controller('apctrl',["$scope","fbauthFact","$log","appo","bike","$location",function($scope,fbauthFact,$log,appo,bike,$location){
     $log.log("In Appointment controller");
     $scope.usr= fbauthFact.getResponseobj();
     $scope.appos = {};
     $scope.newappo = {};
     $scope.selected = {value: null};
-    var idx;
-    
+    var idx;    
         
     $scope.myDate = new Date();
     $scope.minDate = new Date(
@@ -106,16 +117,15 @@ ub.controller('apctrl',["$scope","fbauthFact","$log","appo","bike",function($sco
     
     appo.getappos($scope.usr).then(function(response){
         $scope.appos = response;
+        $scope.msg = response.msg;
     },function(reason){
-        $scope.msg = reason;
+        $scope.msg = reason.msg;
     });//getappos
     
     bike.getbikes($scope.usr).then(function(response){
-        $scope.bikes = response;
         $scope.newappo = response;
-        $scope.newappo.email = $scope.usr.email;
-    },function(reason){
-        $scope.msg = reason;
+        },function(reason){
+        $scope.msg = reason.msg;
     });//getbikes
     
     $scope.delappo=function(idx){
@@ -130,15 +140,17 @@ ub.controller('apctrl',["$scope","fbauthFact","$log","appo","bike",function($sco
     
     $scope.addappo = function(idx){
         $scope.newappo[idx].usr_id = $scope.usr._id;
+       
         appo.addappo($scope.newappo[idx]).then(function(response){
            $scope.msg = response; 
+            $location.path('/appoint');
         },function(reason){
             $scope.msg = reason;
         });
     };
 }]);
 
-ub.controller('bikectrl',["$scope","fbauthFact","$log","bike",function($scope,fbauthFact,$log,bike){
+ub.controller('bikectrl',["$scope","fbauthFact","$log","bike","$location",function($scope,fbauthFact,$log,bike,$location){
     $log.log("In bike controller");
     $scope.msg = "";
     $scope.bikes =[];//bikes array to store bikes retrieved for a user
@@ -152,6 +164,7 @@ ub.controller('bikectrl',["$scope","fbauthFact","$log","bike",function($scope,fb
     
     bike.getbikes($scope.usr).then(function(response){
         $scope.bikes = response;
+        
     },function(reason){
         $scope.msg = reason;
     });//getbikes
@@ -170,6 +183,7 @@ ub.controller('bikectrl',["$scope","fbauthFact","$log","bike",function($scope,fb
         
         bike.subbike($scope.bike).then(function(response){
            $scope.msg= response;
+           $location.path('/vbike');
         },function(reason){
             $scope.msg=reason;
         });

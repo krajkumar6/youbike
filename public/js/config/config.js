@@ -21,12 +21,6 @@ ub.config(function($routeProvider){
 		controller:'mainController'
 	})
     
-    .when('/order',{
-		templateUrl: '../pages/order.htm',
-		controller:'orderctrl',
-        authenticated: true
-  	})
-    
     .when('/vprofile',{
 		templateUrl: '../pages/vprofile.htm',
 		controller:'profctrl',

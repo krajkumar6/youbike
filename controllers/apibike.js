@@ -37,10 +37,10 @@ module.exports = function(app){
     
     app.get('/api/getbike*',function(req,res){
         console.log('In getbike api');
-        console.log('req.query :',req.query);
+       // console.log('req.query :',req.query);
         var msg="";
 		ubBike
-            .find({cust:req.query.usr_id})
+            .find({cust:req.query._id})
             .populate('cust','email')
             .exec(function(err,bikes){
                   res.send(bikes);

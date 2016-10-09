@@ -2,7 +2,7 @@ var express = require('express');
 var app = express();
 var mongoose = require('mongoose');
 var config = require('./config');
-var setupController = require('./controllers/setupController.js');
+//var setupController = require('./controllers/setupController.js');
 var apiController = require('./controllers/apiController.js');
 var apibike = require('./controllers/apibike.js');
 var appoController = require('./controllers/appoController.js');
@@ -21,7 +21,7 @@ app.get('/',function(req,res){
 
 mongoose.connect(config.getDBConnectionString());
 
-setupController(app);
+//setupController(app);
 apiController(app);
 apibike(app);
 appoController(app);

@@ -7,7 +7,7 @@
 </div> 
 <div class='row'>
     <div class='col-md-8'>
-        <h3>Appointments of {{usr.first_name}}. Click <a href="#/addappo">here </a>to add</h3> 
+        <h3>Appointments of {{usr.fname}}. Click <a href="#/addappo">here </a>to add</h3> 
     </div>    
 </div> 
 </div>
@@ -42,9 +42,9 @@
     <tbody>
         <tr ng-repeat="x in appos">
             <td>{{$index+1}}</td>
-            <td>{{x.regno}}</td>
-            <td>{{}}</td>
-            <td>{{}}</td>
+            <td>{{x.bike.regno}}</td>
+            <td>{{x.bike.brand}}</td>
+            <td>{{x.bike.model}}</td>
             <td>{{x.appoidt}}</td>
             <td>{{x.status}}</td>
             <td>

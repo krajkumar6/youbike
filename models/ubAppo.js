@@ -7,8 +7,8 @@ var Apposch = new Schema(
 	appoidt : Date,
     reqdt : Date,
 	status : String,
-	bike : { type: Number, ref: 'Bike' },
-    cust : { type: Number, ref: 'Customer' }
+	bike : { type: String, ref: 'Bike' },
+    cust : { type: String, ref: 'Customer' }
 }
 );
 
