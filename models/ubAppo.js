@@ -1,17 +1,17 @@
-var Mongoose = require('mongoose');
+var mongoose = require('mongoose');
 
-var Schema = Mongoose.Schema;
+var Schema = mongoose.Schema;
 
 var Apposch = new Schema(
 	{
 	appoidt : Date,
     reqdt : Date,
 	status : String,
-	bike : { type: String, ref: 'Bike' },
-    cust : { type: String, ref: 'Customer' }
+	bike : { type: Schema.Types.ObjectId, ref: 'Bike' },
+    cust : { type: Schema.Types.ObjectId, ref: 'Customer' }
 }
 );
 
-var appos = Mongoose.model('appos',Apposch);
+var appos = mongoose.model('appos',Apposch);
 
 module.exports = appos;

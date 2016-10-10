@@ -1,10 +1,9 @@
-ub.controller('mainController',['$scope','$log','$http','auth','$location','$anchorScroll','$routeParams','bike',"$location","$window",function($scope,$log,$http,auth,$location,$anchorScroll,$routeParams,bike,$location,$window){
+ub.controller('mainController',['$scope','$log','$http','fbauthFact','$location','$anchorScroll','$routeParams','bike',"$location","$window",function($scope,$log,$http,fbauthFact,$location,$anchorScroll,$routeParams,bike,$location,$window){
 	
     $scope.profpic="";
     $scope.msg="";
     $scope.isAuth = false;
     $scope.usr ={};
-    var googleUser ={};
     
 	switch($routeParams.id)
 	{
@@ -29,13 +28,13 @@ ub.controller('mainController',['$scope','$log','$http','auth','$location','$anc
 	
     
     $scope.fblogin= function(){
-        auth.fblogin().then(
+        fbauthFact.fblogin().then(
                 function(response){
                     
-                $scope.isAuth = auth.isAuth;
-                $scope.usr =auth.getResponseobj();  
+                $scope.isAuth = fbauthFact.isAuth;
+                $scope.usr =fbauthFact.getResponseobj();  
                 $scope.msg= response.msg;
-                $scope.profpic=auth.profpic;
+                $scope.profpic=fbauthFact.profpic;
                 
                 bike.getbikes($scope.usr).then(function(response){
                    
@@ -59,9 +58,9 @@ ub.controller('mainController',['$scope','$log','$http','auth','$location','$anc
   
     $scope.fblogout = function(){
         
-        auth.fblogout().then(
+        fbauthFact.fblogout().then(
         function(response){
-            $scope.msg=auth.msg;
+            $scope.msg=fbauthFact.msg;
             $location.path('/');
             $window.location.reload();
         },function(reason){
@@ -72,62 +71,20 @@ ub.controller('mainController',['$scope','$log','$http','auth','$location','$anc
         
     //fblogout
     
-    $scope.gonlogin= function(googleUser){
-        auth.gonlogin(googleUser).then(
-                function(response){
-                    
-                $scope.isAuth = auth.isAuth;
-                $scope.usr =auth.getResponseobj();  
-                $scope.msg= response.msg;
-                $scope.profpic=auth.profpic;
-                
-                bike.getbikes($scope.usr).then(function(response){
-                   
-                    if (response.length ==0)
-                    {
-                    $location.path('/addbike');//redirect to addbike screen    
-                    }
-                    else{
-                    $location.path('/appoint');//else redirect to view appointment screen
-                    }
-                },function(reason){
-                    $scope.msg1 = reason;
-                });//getbikes
-                  
-                            
-            },function(reason){
-                 $log.log("google login() - failure :Need to login to the application :"+reason);
-            })
-            
-        };//glogin
-    
-    $scope.glogout = function(){
-        
-        auth.glogout().then(
-        function(response){
-            $scope.msg=auth.msg;
-            $location.path('/');
-            $window.location.reload();
-        },function(reason){
-            $scope.msg="Google Logout Error!! Pls check Logs";
-        }
-        );
-    }; //glogout
-    
 }]);//mainController
 
 
-ub.controller('profctrl',["$scope","auth","formsub","$log","$timeout","$location",function($scope,auth,formsub,$log,$timeout,$location){
+ub.controller('profctrl',["$scope","fbauthFact","formsub","$log","$timeout","$location",function($scope,fbauthFact,formsub,$log,$timeout,$location){
     //$log.log("In Profile controller");
     $scope.msg = "";
-    $scope.usr =auth.getResponseobj();
+    $scope.usr =fbauthFact.getResponseobj();
     
 
    $scope.submit = function(){
         
         formsub.submit($scope.usr).then(function(response){
                 $scope.msg=response.msg;
-                $scope.usr = auth.getResponseobj();
+                $scope.usr = fbauthFact.getResponseobj();
                 $log.log('$scope.usr',$scope.usr);
                 $location.path('/vprofile');
                 },function(reason){
@@ -136,9 +93,9 @@ ub.controller('profctrl',["$scope","auth","formsub","$log","$timeout","$location
     };//submit
 }]);
 
-ub.controller('apctrl',["$scope","auth","$log","appo","bike","$location",function($scope,auth,$log,appo,bike,$location){
+ub.controller('apctrl',["$scope","fbauthFact","$log","appo","bike","$location",function($scope,fbauthFact,$log,appo,bike,$location){
     $log.log("In Appointment controller");
-    $scope.usr= auth.getResponseobj();
+    $scope.usr= fbauthFact.getResponseobj();
     $scope.appos = {};
     $scope.newappo = {};
     $scope.selected = {value: null};
@@ -193,7 +150,7 @@ ub.controller('apctrl',["$scope","auth","$log","appo","bike","$location",functio
     };
 }]);
 
-ub.controller('bikectrl',["$scope","auth","$log","bike","$location",function($scope,auth,$log,bike,$location){
+ub.controller('bikectrl',["$scope","fbauthFact","$log","bike","$location",function($scope,fbauthFact,$log,bike,$location){
     $log.log("In bike controller");
     $scope.msg = "";
     $scope.bikes =[];//bikes array to store bikes retrieved for a user
@@ -202,7 +159,7 @@ ub.controller('bikectrl',["$scope","auth","$log","bike","$location",function($sc
     //var bike ={};
     var idx;
     
-    $scope.usr = auth.getResponseobj();
+    $scope.usr = fbauthFact.getResponseobj();
     $scope.bike.usr_id = $scope.usr._id;
     
     bike.getbikes($scope.usr).then(function(response){

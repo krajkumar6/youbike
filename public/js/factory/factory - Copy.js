@@ -1,4 +1,4 @@
-ub.service('auth',["$http","$log","$q","$cookies",function($http,$log,$q,$cookies){
+ub.service('fbauthFact',["$http","$log","$q","$cookies",function($http,$log,$q,$cookies){
     
     this.isAuth=false;
     this.profpic=""
@@ -99,36 +99,6 @@ ub.service('auth',["$http","$log","$q","$cookies",function($http,$log,$q,$cookie
         }); 
         return deferred.promise;
     };//fblogin
-    
-    this.gonlogin =function(googleUser){
-        var deferred = $q.defer();
-        var profile = googleUser.getBasicProfile();
-        
-        self.accesstoken = googleUser.accessToken;
-        $cookies.put('acctoken',self.accesstoken);
-        
-        $http({
-                method: 'GET',
-                url:"http://localhost:3000/api/getprofauth",
-                params:googleUser
-                }).then(function successCallback(srresponse){
-                  
-                  self.userobj=srresponse.data;    
-                  $cookies.putObject('usrobj',srresponse.data);
-                  deferred.resolve(self.userobj);
-            
-                },function errorCallback(srresponse){
-                  $log.error("http request for google login failed");
-                  deferred.reject(srresponse.data);
-              }); //$http google+
-        
-        
-        $log.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
-        $log.log('Name: ' + profile.getName());
-        $log.log('Image URL: ' + profile.getImageUrl());
-        $log.log('Email: ' + profile.getEmail()); 
-        return deferred.promise;
-    };//gonlogin
 
     this.fblogout = function(){
         var logdef= $q.defer();
@@ -140,21 +110,6 @@ ub.service('auth',["$http","$log","$q","$cookies",function($http,$log,$q,$cookie
         });
         return logdef.promise;
     };//fblogout
-    
-    this.glogout = function(){
-        
-        var logdef= $q.defer();        
-        var auth2 = gapi.auth2.getAuthInstance();
-        
-        auth2.signOut().then(function () {
-        $log.log('Google User signed out.');
-        $cookies.remove('acctoken');
-        $cookies.remove('resobj');
-        logdef.resolve('Google User logged out successfully');
-        });//signOut
-        
-        return logdef.promise;
-    };//glogout
     
     this.getAccesstoken=function(){
         var acctoken = $cookies.get('acctoken');
@@ -213,7 +168,7 @@ ub.service('formsub',["$http","$log","$q","$timeout","$cookies",function($http,$
     }//getprof*/
 }]);
 
-ub.service('bike',['$http','auth','$log','$q',function($http,auth,$log,$q){
+ub.service('bike',['$http','fbauthFact','$log','$q',function($http,fbauthFact,$log,$q){
     var user={};
     var bike={};
     //retrieve bikes

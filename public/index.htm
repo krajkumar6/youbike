@@ -1,7 +1,17 @@
 <!DOCTYPE html>
 <html lang="en" ng-app="ub">
 <head>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
 
+  ga('create', 'UA-84682929-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+    
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -54,7 +64,10 @@
     <script src="./js/config/config.js"></script>
     <script src="./js/factory/factory.js"></script>    
     <script src="./js/controller/controller.js"></script> 
-
+    <!--Google sign in API -->
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <meta name="google-signin-client_id" content="1094664898379-8u0muh9eme8nnvp95dafuc3rvigu4j9u.apps.googleusercontent.com">
+    
     <style>
      .datepickerdemo md-content {
         padding-bottom: 200px; 

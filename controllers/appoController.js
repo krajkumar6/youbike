@@ -22,7 +22,7 @@ module.exports = function(app){
                 res.send(results);	 
 			 }
 			 else{
-                console.log('appointment results',results);
+                //console.log('appointment results',results);
 				res.send(results);	 
 			 }
 			

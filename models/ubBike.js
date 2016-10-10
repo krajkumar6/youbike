@@ -1,6 +1,6 @@
-var Mongoose = require('mongoose');
+var mongoose = require('mongoose');
 
-var Schema = Mongoose.Schema;
+var Schema = mongoose.Schema;
 
 var Bikesch= new Schema(
 {
@@ -9,11 +9,11 @@ var Bikesch= new Schema(
 	year : String,
 	kms  : Number,
 	regno : String,
-	cust : { type: String, ref: 'Customer' }
+	cust : { type: Schema.Types.ObjectId, ref: 'Customer' }
 }
 );
 
-var Bike = Mongoose.model('Bike',Bikesch);
+var Bike = mongoose.model('Bike',Bikesch);
 
 module.exports = Bike;
 

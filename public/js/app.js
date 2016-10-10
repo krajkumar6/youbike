@@ -1,6 +1,6 @@
 var ub = angular.module('ub',['ngMaterial','ngRoute','ngCookies']);
 
-ub.run([function($rootScope,$location,fbauthFact){
+ub.run([function($rootScope,$location,auth){
 
 // This is called with the results from from FB.getLoginStatus().
     function statusChangeCallback(response) {
@@ -12,7 +12,7 @@ ub.run([function($rootScope,$location,fbauthFact){
     // for FB.getLoginStatus().
     if (response.status === 'connected') {
       // Logged into your app and Facebook.
-      fbauthFact.testAPI();
+      auth.testAPI();
     } else if (response.status === 'not_authorized') {
       // The person is logged into Facebook, but not your app.
       console.log('Pls log in to the app');

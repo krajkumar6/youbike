@@ -11,7 +11,7 @@ module.exports = function (app){
     //check profile api to check whether user profile exists or not using fb response object.if it exists return profile otherwise create profile
     app.get('/api/getprofauth*',function(req,res){
 		console.log('In getprofile authentication api');
-        console.log('req.query :',req.query);
+        //console.log('req.query :',req.query);
         
 		ubCust.findOne({email: req.query.email},function(err,usr){
 			if(err) throw err;
@@ -28,7 +28,7 @@ module.exports = function (app){
 			}
 			else {
 				usr.msg = "Welcome back "+ usr.fname + " !!";
-                console.log('usr:',usr);
+               // console.log('usr:',usr);
                 res.send(usr);                
 			}
 		});

@@ -35,8 +35,8 @@ module.exports = function(app){
 	
     //api to get all registered bikes
     
-    app.get('/api/getbike*',function(req,res){
-        console.log('In getbike api');
+    app.get('/api/getbikes*',function(req,res){
+        console.log('In getbikes api');
        // console.log('req.query :',req.query);
         var msg="";
 		ubBike
@@ -47,6 +47,56 @@ module.exports = function(app){
                 if(err) throw err;
             });
 	});
+    
+    //api to get bikes which does not have appointment
+    
+    app.get('/api/getbikeappo*',function(req,res){
+        console.log('In getbikeappo api');
+       // console.log('req.query :',req.query);
+        var msg="";
+		ubBike
+            .find({cust:req.query._id})
+            .populate('cust','email')
+            .exec(function(err,bikes){
+                  res.send(bikes);
+                if(err) throw err;
+            });
+	});
+   /* app.get('/api/getbikeappo*',function(req,res){
+        console.log('In getbikeappo api');
+       // console.log('req.query :',req.query);
+        var msg="";
+        //.find({cust:req.query._id})
+        //.populate('cust','email')
+        ubBike.aggregate([
+                {
+                    $match:
+                    {
+                        cust : req.query._id
+                    }
+                },
+                {
+                    $lookup:
+                    {
+                        from: "appos",
+                        localField: "_id",
+                        foreignField: "bike",
+                        as : "appointments"
+                    }
+                },
+                {
+                    $match:
+                    {
+                        "appointments" : {$eq : []}
+                    }
+                }
+            ])
+            .exec(function(err,bikes){
+                console.log('bikes',bikes);
+                  res.send(bikes);
+                if(err) throw err;
+            });
+	}); */
 	
     
 	//section to remove a bike

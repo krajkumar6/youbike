@@ -58,12 +58,12 @@ ub.config(function($routeProvider){
     
 });
 
-ub.run(['$rootScope','$location','fbauthFact',function($rootScope,$location,fbauthFact){
+ub.run(['$rootScope','$location','auth',function($rootScope,$location,auth){
 
 // registering a listener for $routeChangeStart event
     $rootScope.$on('$routeChangeStart',function(event,next,current){
     if(next.$$route.authenticated){
-        var userAuth = fbauthFact.getAccesstoken();
+        var userAuth = auth.getAccesstoken();
         if(!userAuth){
             $location.path('/');
         }
