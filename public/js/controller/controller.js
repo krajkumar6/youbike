@@ -140,7 +140,7 @@ ub.controller('apctrl',["$scope","auth","$log","appo","bike","$location",functio
     $log.log("In Appointment controller");
     $scope.usr= auth.getResponseobj();
     $scope.appos = {};
-    $scope.newappo = {};
+    $scope.newappo = [];
     $scope.selected = {value: null};
     var idx;    
         

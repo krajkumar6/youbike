@@ -1,5 +1,6 @@
 var Appo = require('../models/ubAppo');
 var bodyParser = require('body-parser');
+var nodemailer = require('nodemailer');
 
 module.exports = function(app){
 	app.use(bodyParser.json());
@@ -47,6 +48,7 @@ module.exports = function(app){
 					
 					},function(err,results){
 						if(err) throw err
+                        //include email code here
 						res.send('Appointment Booked.Thank you!!');
 					})
 				}

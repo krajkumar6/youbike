@@ -6,6 +6,7 @@ var config = require('./config');
 var apiController = require('./controllers/apiController.js');
 var apibike = require('./controllers/apibike.js');
 var appoController = require('./controllers/appoController.js');
+//var mailController = require('./controllers/mailController.js');
 
 var port = process.env.PORT||3000;
 
@@ -25,4 +26,5 @@ mongoose.connect(config.getDBConnectionString());
 apiController(app);
 apibike(app);
 appoController(app);
+mailController(app);
 app.listen(port);

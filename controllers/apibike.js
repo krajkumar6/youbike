@@ -1,5 +1,6 @@
 var ubBike = require('../models/ubBike.js');
 var bodyParser = require('body-parser');
+var mongoose = require('mongoose');
 
 module.exports = function(app){
 	app.use(bodyParser.json());
@@ -50,7 +51,7 @@ module.exports = function(app){
     
     //api to get bikes which does not have appointment
     
-    app.get('/api/getbikeappo*',function(req,res){
+    /*app.get('/api/getbikeappo*',function(req,res){
         console.log('In getbikeappo api');
        // console.log('req.query :',req.query);
         var msg="";
@@ -61,42 +62,43 @@ module.exports = function(app){
                   res.send(bikes);
                 if(err) throw err;
             });
-	});
-   /* app.get('/api/getbikeappo*',function(req,res){
+	});*/
+    app.get('/api/getbikeappo*',function(req,res){
         console.log('In getbikeappo api');
+        //console.log('req.query._id',mongoose.Types.ObjectId(req.query._id));
        // console.log('req.query :',req.query);
         var msg="";
         //.find({cust:req.query._id})
         //.populate('cust','email')
         ubBike.aggregate([
                 {
-                    $match:
+                    "$match":
                     {
-                        cust : req.query._id
+                        "cust" : mongoose.Types.ObjectId(req.query._id)
                     }
                 },
                 {
-                    $lookup:
+                    "$lookup":
                     {
-                        from: "appos",
-                        localField: "_id",
-                        foreignField: "bike",
-                        as : "appointments"
+                        "from": "appos",
+                        "localField": "_id",
+                        "foreignField": "bike",
+                        "as" : "appointments"
                     }
                 },
                 {
-                    $match:
+                    "$match":
                     {
-                        "appointments" : {$eq : []}
+                        "appointments.status": { "$ne": "Booked" }
                     }
                 }
             ])
             .exec(function(err,bikes){
-                console.log('bikes',bikes);
+                //console.log('bikes',bikes);
                   res.send(bikes);
                 if(err) throw err;
             });
-	}); */
+	}); 
 	
     
 	//section to remove a bike
