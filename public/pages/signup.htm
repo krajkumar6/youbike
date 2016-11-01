@@ -13,11 +13,20 @@
 	        </div>
         	
         	<div class="col-xs-6 col-md-3">
-		        <a href="" class="btn btn-lg btn-block omb_btn-google" data-onsuccess="gonlogin">
-			        <i class="fa fa-google-plus visible-xs"></i>
-			        <span class="hidden-xs">Google+</span>
+		       <a href="/auth/google" class="btn btn-lg btn-block omb_btn-google" >
+			         <i class="fa fa-google-plus visible-xs"></i>
+			       <!-- <span class="hidden-xs">Google+</span> -->
+                      <span class="g-signin"
+                    data-scope="https://www.googleapis.com/auth/plus.login"
+                    data-clientid="1094664898379-8u0muh9eme8nnvp95dafuc3rvigu4j9u.apps.googleusercontent.com"
+                    data-redirecturi="postmessage"
+                    data-accesstype="offline"
+                    data-cookiepolicy="single_host_origin"
+                    data-callback="signInCallback">Google+
+                  </span>
 		        </a>
 	        </div>	
+            <!--<div id="result"></div>-->
 		</div>
 		<div class="row">
 			<div style="text-align:center;" id="status">{{msg}}
