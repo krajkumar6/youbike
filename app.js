@@ -3,15 +3,15 @@ var app = express();
 var mongoose = require('mongoose');
 var config = require('./config');
 var passport = require('passport');
-var cookieParser = require('cookie-parser');
-app.use(cookieParser());
-var session = require('express-session');
-app.use(session({
+//var cookieParser = require('cookie-parser');
+//app.use(cookieParser());
+//var session = require('express-session');
+/*app.use(session({
   secret: 'keyboard cat',
   resave: false,
   saveUninitialized: true,
   cookie: { secure: true }
-}));
+}));*/
 
 //var setupController = require('./controllers/setupController.js');
 var apiController = require('./controllers/apiController.js');

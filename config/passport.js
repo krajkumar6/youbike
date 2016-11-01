@@ -4,7 +4,7 @@ var ubCust = require('../models/ubCust.js');
 //var FacebookStrategy = require('passport-facebook').Strategy;
 var FacebookTokenStrategy = require('passport-facebook-token');
 
-var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
+//var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 
 //var FacebookStrategy = require('passport-facebook').Strategy;
 
