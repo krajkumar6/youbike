@@ -12,19 +12,7 @@ var custSchema = new Schema(
 	add2 : String,
 	city : String,
 	pincode : String,
-	gender : String,
-    facebook : {
-        id: String,
-        token : String,
-        email : String,
-        name : String
-    },
-    google : {
-        id: String,
-        token : String,
-        email : String,
-        name : String
-    }
+	gender : String
 })
 
 var Customer = mongoose.model('Customer',custSchema);

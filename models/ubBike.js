@@ -16,5 +16,3 @@ var Bikesch= new Schema(
 var Bike = mongoose.model('Bike',Bikesch);
 
 module.exports = Bike;
-
-
