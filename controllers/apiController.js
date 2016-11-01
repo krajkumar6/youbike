@@ -4,16 +4,31 @@ var bodyParser = require('body-parser');
 var guestmenu =['Services','Contact','About','Register/Login','Appointments'];
 var usermenu=['Profile',' Appointments','Orders','About' ,'Contact','Services','Logout'];
 
-module.exports = function (app){
-	app.use(bodyParser.json());
-	app.use(bodyParser.urlencoded({extended:true}));
+module.exports = function (app,passport){
+	//app.use(bodyParser.json());
+	//app.use(bodyParser.urlencoded({extended:true}));
 
     //check profile api to check whether user profile exists or not using fb response object.if it exists return profile otherwise create profile
-    app.get('/api/getprofauth*',function(req,res){
+    app.post('/auth/facebook/accesstoken',
+      passport.authenticate('facebook-token',{session: false}),
+      function (req, res) {
+        // do something with req.user
+        if(req.user){
+            console.log('fb user authenticated');
+            res.send(req.user);
+        }
+        else{
+            console.log('no entry');
+            res.send(401);
+        }
+      }
+    );
+    
+    app.get('/api/getprofauth',function(req,res){
 		console.log('In getprofile authentication api');
         //console.log('req.query :',req.query);
-        
-		ubCust.findOne({email: req.query.email},function(err,usr){
+      
+		/*ubCust.findOne({email: req.query.email},function(err,usr){
 			if(err) throw err;
 			if (usr == null){
 				console.log('New User will be created');
@@ -31,10 +46,9 @@ module.exports = function (app){
                // console.log('usr:',usr);
                 res.send(usr);                
 			}
-		});
+		});*/
 		
 	});
-    
 	
 	//section to Update user profile information
 	app.post('/api/updprof*',function(req,res){
@@ -81,3 +95,4 @@ module.exports = function (app){
 	});*/
 	
 };
+

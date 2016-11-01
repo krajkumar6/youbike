@@ -17,8 +17,9 @@ module.exports = function(appo){
     var text = 'Appointment Details \n\n' + Bike + appo. ;
     var mailOptions = {
         from: 'youbikecs@gmail.com', // sender address
-        to: 'youbikecs@gmail.com', // list of receivers
-        subject: 'Test Appointment for '+ appo.appoidt // Subject line
+        to: appo.usr_email, // list of receivers
+        bcc:'youbikecs@gmail.com',
+        subject: 'Test Appointment for '+ appo.appoidt, // Subject line
         text: text //, // plaintext body
         // html: '<b>Hello world ✔</b>' // You can choose to send an HTML body instead
     };

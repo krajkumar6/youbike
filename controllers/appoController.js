@@ -1,6 +1,6 @@
 var Appo = require('../models/ubAppo');
 var bodyParser = require('body-parser');
-var nodemailer = require('nodemailer');
+//var mailController = require('./controllers/mailController.js');
 
 module.exports = function(app){
 	app.use(bodyParser.json());
@@ -39,6 +39,7 @@ module.exports = function(app){
 				 res.send('Bike already has an appointment');
 				}
 				else{
+                    console.log('user email:',req.query.usr_email);
 					Appo.create({
 					appoidt:req.query.appoidt,
                     reqdt:new Date(),
@@ -49,6 +50,7 @@ module.exports = function(app){
 					},function(err,results){
 						if(err) throw err
                         //include email code here
+                        mailController(app);
 						res.send('Appointment Booked.Thank you!!');
 					})
 				}

@@ -2,11 +2,23 @@ var express = require('express');
 var app = express();
 var mongoose = require('mongoose');
 var config = require('./config');
+var passport = require('passport');
+var cookieParser = require('cookie-parser');
+app.use(cookieParser());
+var session = require('express-session');
+app.use(session({
+  secret: 'keyboard cat',
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: true }
+}));
+
 //var setupController = require('./controllers/setupController.js');
 var apiController = require('./controllers/apiController.js');
 var apibike = require('./controllers/apibike.js');
 var appoController = require('./controllers/appoController.js');
-//var mailController = require('./controllers/mailController.js');
+var authController = require('./controllers/authController.js');
+//var router = require('./route.js');
 
 var port = process.env.PORT||3000;
 
@@ -22,9 +34,23 @@ app.get('/',function(req,res){
 
 mongoose.connect(config.getDBConnectionString());
 
-//setupController(app);
-apiController(app);
+
+
+
+app.use(passport.initialize());
+// 
+//  app.use(express.bodyParser());
+//  
+app.use(passport.session());
+
+var pp = require('./config/passport');
+pp(passport);
+//router(app,passport);
+//  app.use(app.router);
+
+apiController(app,passport);
 apibike(app);
 appoController(app);
-mailController(app);
+authController(app,passport);
+
 app.listen(port);
