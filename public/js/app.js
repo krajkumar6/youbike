@@ -1,6 +1,6 @@
 var ub = angular.module('ub',['ngMaterial','ngRoute','ngCookies']);
 
-ub.run([function($rootScope,$location,auth){
+ub.run([function(){
 
 // This is called with the results from from FB.getLoginStatus().
     function statusChangeCallback(response) {

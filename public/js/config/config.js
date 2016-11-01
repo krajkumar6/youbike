@@ -23,8 +23,8 @@ ub.config(function($routeProvider){
     
     .when('/vprofile',{
 		templateUrl: '../pages/vprofile.htm',
-		controller:'profctrl',
-        authenticated: true
+		controller:'profctrl'
+ //       authenticated: true
     })
     
     .when('/vbike',{

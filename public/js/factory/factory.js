@@ -5,7 +5,9 @@ ub.service('auth',["$http","$log","$q","$cookies",function($http,$log,$q,$cookie
     this.fbresponse={};
     this.msg="";
     this.userobj = {};
+    this.user = {};
     var self=this;
+    
     
     self.userCrea =function() {
         var tAdef = $q.defer();
@@ -19,48 +21,28 @@ ub.service('auth',["$http","$log","$q","$cookies",function($http,$log,$q,$cookie
             self.isAuth=true;
             self.accesstoken = FB.getAuthResponse().accessToken;
             $cookies.put('acctoken',self.accesstoken);
-                   
+            //access_token= FB.getAuthResponse().accessToken;
             document.getElementById('status').innerHTML =
             'Thanks for logging in, ' + response.first_name + '!';
             document.getElementById('profpic').innerHTML =
             "<img src='" + response.picture.data.url + "'>";
             
-            $log.log('response object',response);
+            //$log.log('response object',response);
             
               $http({
-                method: 'GET',
-                url:"http://localhost:3000/api/getprofauth",
-                params:response
+                method: 'POST',
+                url:"/auth/facebook/accesstoken",
+                params:{access_token:FB.getAuthResponse().accessToken}
                 }).then(function successCallback(srresponse){
                   
-                  self.userobj=srresponse.data;    
+                  self.userobj=srresponse.data;
+                  $log.log('facebook passport authenticated user:',srresponse.data);
                   $cookies.putObject('usrobj',srresponse.data);
                   tAdef.resolve(self.userobj);
-                  /*if(srresponse==null){
-                      //create a new user in db
-                      $log.info("Creating new user in db");
-                      $http({
-                            method:"POST",
-                            url: "http://localhost:3000/api/creaprof",
-                            params: response
-                            }).then(function successCallback(srresponse){
-                                    self.userobj=srresponse.data;    
-                                    //$log.log("http get request success: "+self.msg);
-                                    $cookies.putObject('resobj',srresponse.data);
-                                    tAdef.resolve(self.userobj);
-                                    },
-                                    function errorCallback(srresponse){
-                                        //$log.log("http get request failure:"+srresponse.data);
-                                        tAdef.reject('http get request failure');
-                                    });
-                      
-                    }
-                  else{
-                      $cookies.putObject('resobj',srresponse.data);
-                  } */
+            
                 },function errorCallback(srresponse){
                   $log.error("http request for user login failed");
-                  tAdef.reject('http get request failure');
+                  tAdef.reject(srresponse.statusText);
               });
           
         });//FB.api call back function
@@ -100,6 +82,19 @@ ub.service('auth',["$http","$log","$q","$cookies",function($http,$log,$q,$cookie
         return deferred.promise;
     };//fblogin
     
+    this.fbloginnew = function(){
+      
+        $http({
+        method: "GET",
+        url:"/auth/facebook"        
+        }).then(function successCallback(srresponse){
+          $log.log('fbtoken:',srresponse);
+        },function errorCallback(srresponse){
+          $log.error("http request through fb passport failed ",srresponse);
+         
+      }); //$http 
+    };
+    
     this.gonlogin =function(googleUser){
         var deferred = $q.defer();
         var profile = googleUser.getBasicProfile();
@@ -129,6 +124,47 @@ ub.service('auth',["$http","$log","$q","$cookies",function($http,$log,$q,$cookie
         $log.log('Email: ' + profile.getEmail()); 
         return deferred.promise;
     };//gonlogin
+    
+    this.gloginnew = function(){
+    /*    googleUser={
+            access_token :"ya29.CjCHA_GNfnehRPlBxFV0HigSqHWJQJkH-m4TZMSLm4L2O3_nPbcRavAZMFtjoZwFhG8"
+        };*/
+      
+        /*$http({
+        method: "GET",
+        url:"/auth/google"        
+        }).then(function successCall = {back(srresponse){
+          $log.log('google access token:',srresponse.google.token);
+        },function errorCallback(srresponse){
+          $log.error("http request through google+ passport failed ",srresponse);
+         
+      }); //$http */
+     // code = authResult.code;
+     // if (code) {
+       /* $.post('/auth/google/callback', { code: authResult.code})
+        .done(function(data) {
+          $('#signinButton').hide();
+        }); */
+        var deferred = $q.defer();
+          $http({method: "GET",
+                url:"/auth/google"
+                }).then(
+            function successCallback(srresponse){
+            $log.log('google plus response',srresponse);
+                self.user=srresponse;
+                deferred.resolve(srresponse);
+            },
+            function errorCallback(srresponse){
+            $log.error("http request through google+ passport failed ",srresponse);
+                deferred.reject(srresponse);
+            }
+            );
+
+   /*   } else if (authResult.error) {
+        $log.error('There was an error: ' + authResult.error);
+      } */   
+        return deferred.promise;
+    };//gloginnew
 
     this.fblogout = function(){
         var logdef= $q.defer();

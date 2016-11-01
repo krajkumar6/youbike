@@ -56,6 +56,10 @@ ub.controller('mainController',['$scope','$log','$http','auth','$location','$anc
             })
             
         };//fblogin
+    
+    $scope.fbloginnew=function(){
+        auth.fbloginnew();
+    };//fbloginnew
   
     $scope.fblogout = function(){
         
@@ -100,6 +104,36 @@ ub.controller('mainController',['$scope','$log','$http','auth','$location','$anc
             })
             
         };//glogin
+    
+    $scope.gloginnew=function(){
+        $log.log("in gloginnew()");
+        auth.gloginnew().then(
+                function(response){
+                    
+                $scope.isAuth = auth.isAuth;
+                $scope.usr =auth.user;
+                $log.log('$scope.usr',$scope.usr);
+                //$scope.msg= response.msg;
+                //$scope.profpic=auth.profpic;
+                
+                bike.getbikes($scope.usr).then(function(response){
+                   
+                    if (response.length ==0)
+                    {
+                    $location.path('/addbike');//redirect to addbike screen    
+                    }
+                    else{
+                    $location.path('/appoint');//else redirect to view appointment screen
+                    }
+                },function(reason){
+                    $scope.msg1 = reason;
+                });//getbikes
+                  
+                            
+            },function(reason){
+                 $log.log("fblogin() - failure :Need to login to the application :"+reason);
+            });
+    };//gloginnew
     
     $scope.glogout = function(){
         
@@ -183,7 +217,7 @@ ub.controller('apctrl',["$scope","auth","$log","appo","bike","$location",functio
     
     $scope.addappo = function(idx){
         $scope.newappo[idx].usr_id = $scope.usr._id;
-       
+       $scope.newappo[idx].usr_email = $scope.usr.email;
         appo.addappo($scope.newappo[idx]).then(function(response){
            $scope.msg = response; 
             $location.path('/appoint');
