@@ -49,8 +49,8 @@ pp(passport);
 //  app.use(app.router);
 
 apiController(app,passport);
-apibike(app);
-appoController(app);
-authController(app,passport);
+apibike(app,passport);
+appoController(app,passport);
+//authController(app,passport);
 
 app.listen(port);

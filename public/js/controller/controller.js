@@ -33,7 +33,8 @@ ub.controller('mainController',['$scope','$log','$http','auth','$location','$anc
                 function(response){
                     
                 $scope.isAuth = auth.isAuth;
-                $scope.usr =auth.getResponseobj();  
+                $scope.usr =auth.getResponseobj();
+                $scope.usr.access_token=auth.getAccesstoken();  
                 $scope.msg= response.msg;
                 $scope.profpic=auth.profpic;
                 

@@ -1,4 +1,4 @@
-var ub = angular.module('ub',['ngMaterial','ngRoute','ngCookies']);
+var ub = angular.module('ub',['ngMaterial','ngRoute','ngCookies','base64']);
 
 ub.run([function(){
 

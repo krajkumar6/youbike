@@ -249,22 +249,28 @@ ub.service('formsub',["$http","$log","$q","$timeout","$cookies",function($http,$
     }//getprof*/
 }]);
 
-ub.service('bike',['$http','auth','$log','$q',function($http,auth,$log,$q){
+ub.service('bike',['$http','auth','$log','$q','$base64',function($http,auth,$log,$q,$base64){
     var user={};
     var bike={};
     //retrieve bikes
     this.getbikes = function(user){
         var deferred = $q.defer();
+        //$log.log("Bearer: ", auth.getAccesstoken());
+        //$log.log("Bearer base64: ", $base64.encode(auth.getAccesstoken()));
         $http({
             method:"GET",
             url:"http://localhost:3000/api/getbikes",
-            params: user
+            //params:{access_token:auth.getAccesstoken()}
+            //params:user,
+            headers:{
+                access_token: $base64.encode(auth.getAccesstoken())
+            }                       
         }).then(function successCallback(srresponse){
             deferred.resolve(srresponse.data);
         }, 
             function failureCallback(srresponse){
-            $log.error("get bikes http call failed ",srresponse.data);
-            deferred.reject(srresponse.data);
+            $log.error("get bikes http call failed ",srresponse.statusText );
+            deferred.reject(srresponse.statusText );
         });//$http
         return deferred.promise;
     };//getbikes

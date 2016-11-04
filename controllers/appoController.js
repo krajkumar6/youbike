@@ -2,14 +2,17 @@ var Appo = require('../models/ubAppo');
 var bodyParser = require('body-parser');
 //var mailController = require('./controllers/mailController.js');
 
-module.exports = function(app){
+module.exports = function(app,passport){
 	app.use(bodyParser.json());
 	app.use(bodyParser.urlencoded({extended:true}));
 	
 	//section to retreive appointments
-	app.get('/api/vappos*',function(req,res){
-		console.log("In view appointment api");
-        Appo.find({cust:req.query._id})
+	app.get('/api/vappos*',
+	passport.authenticate('facebook-token',{session: false}),
+	function(req,res){
+		if(req.user){
+			console.log("In view appointment api");
+        	Appo.find({cust:req.query._id})
             .populate({
             path : 'bike',
             select: 'brand model regno'
@@ -28,12 +31,21 @@ module.exports = function(app){
 			 }
 			
 			});
+		}
+		else
+		{
+			res.send(401);
+		}
+		
 	});
 	
 	//section to create an appointment
 	
-	app.post('/api/cappos*',function(req,res){
-		Appo.findOne({cust:req.query._id,regno:req.query.regno},
+	app.post('/api/cappos*',
+	passport.authenticate('facebook-token',{session: false}),
+	function(req,res){
+		if(req.user){
+			Appo.findOne({cust:req.query._id,regno:req.query.regno},
 			function(err,results){
 			if(results!==null){
 				 res.send('Bike already has an appointment');
@@ -55,12 +67,21 @@ module.exports = function(app){
 					})
 				}
 						
-		});
+			});
+		}
+		else
+		{
+			res.send(401);
+		}
+		
 	});
 	
 	//section to update an appointment
-	app.post('/api/uappos*',function(req,res){
-		Appo.findOneAndUpdate({email:req.params.uid,regno:req.params.reg},
+	app.post('/api/uappos*',
+	passport.authenticate('facebook-token',{session: false}),
+	function(req,res){
+		if(req.user){
+			Appo.findOneAndUpdate({email:req.params.uid,regno:req.params.reg},
 				{servicedt : req.params.dt},
 								{new: true},
 				function(err,results){ 
@@ -68,13 +89,22 @@ module.exports = function(app){
 				if(err) throw err;
 				res.send(results);
 				
-				});  
+				});
+		}
+		else
+		{
+			res.send(401);
+		}
+		  
 				
 	});
 	
 	//section to delete an appointment
-	app.delete('/api/dappos*',function(req,res){
-		Appo.remove( {email:req.query.email,regno:req.query.regno},
+	app.delete('/api/dappos*',
+	passport.authenticate('facebook-token',{session: false}),
+	function(req,res){
+		if(req.user){
+			Appo.remove( {email:req.query.email,regno:req.query.regno},
 					 function(err,results){
 					if(err) throw err;
 					 	if(results.result.n !== 0){
@@ -85,8 +115,14 @@ module.exports = function(app){
 						res.send('appointment already deleted');
 						}
 					
+					});
+			}
+			else
+			{
+				res.send(401);
+			} 
 		});
 		
-	});
+		
 	
 };
