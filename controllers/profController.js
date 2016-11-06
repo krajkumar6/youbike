@@ -2,7 +2,7 @@ var ubCust = require('../models/ubCust.js');
 var bodyParser = require('body-parser');
 
 var guestmenu =['Services','Contact','About','Register/Login','Appointments'];
-var usermenu=['Profile',' Appointments','Orders','About' ,'Contact','Services','Logout'];
+var usermenu=['Profile',' Appointments','Orders','Logout'];
 
 module.exports = function (app,passport){
 	//app.use(bodyParser.json());
@@ -14,6 +14,7 @@ module.exports = function (app,passport){
       function (req, res) {
         // do something with req.user
         if(req.user){
+            req.user.menu=usermenu;
             console.log('fb user authenticated');
             res.send(req.user);
         }
@@ -24,40 +25,14 @@ module.exports = function (app,passport){
       }
     );
     
-    /*app.get('/api/getprofauth',
-		function(req,res){
-		console.log('In getprofile authentication api');
-        //console.log('req.query :',req.query);
-      
-		ubCust.findOne({email: req.query.email},function(err,usr){
-			if(err) throw err;
-			if (usr == null){
-				console.log('New User will be created');
-                
-                ubCust.create({email: req.query.email,fname:req.query.first_name,lname:req.query.last_name,gender:req.query.gender},
-                       function(err,result){
-                       if (err) throw err;
-                       result.msg = "User profile created for "+req.query.first_name;
-                       console.log(result.msg);
-                        res.send(result);
-                        });//create
-			}
-			else {
-				usr.msg = "Welcome back "+ usr.fname + " !!";
-               // console.log('usr:',usr);
-                res.send(usr);                
-			}
-		});
-		
-	});*/
-	
+   	
 	//section to Update user profile information
 	app.post('/api/updprof*',
 		passport.authenticate('facebook-token',{session: false}),
 		function(req,res){
 			if(req.user){
 				console.log("In update profile api");
-				var query = {email: req.email};
+				var query = {_id: req.user._id};
 				console.log('query object:',req.query);
 				console.log('query',query);
 				ubCust.findOneAndUpdate(query,
@@ -83,11 +58,14 @@ module.exports = function (app,passport){
 	});
 	
 	//section to Read user profile information
-	/*app.get('/api/getprof*',function(req,res){
+	app.get('/api/getprof*',
+            passport.authenticate('facebook-token',{session: false}),
+            function(req,res){
+        if(req.user){
 		console.log('In getprofile api');
         console.log('req.query :',req.query);
         
-		ubCust.findOne({id: req.query._id},function(err,usr){
+		ubCust.findOne({_id: req.user._id},function(err,usr){
 			if(err) throw err;
 			if (usr == null){
 				console.log('New User will be created');
@@ -100,8 +78,10 @@ module.exports = function (app,passport){
                 
 			}
 		});
-		
-	});*/
-	
+        }
+        else
+            {
+                res.send(401);
+            }
+	});
 };
-

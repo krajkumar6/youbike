@@ -12,7 +12,7 @@ module.exports = function(app,passport){
 	function(req,res){
 		if(req.user){
 			console.log("In view appointment api");
-        	Appo.find({cust:req.query._id})
+        	Appo.find({cust:req.user._id})
             .populate({
             path : 'bike',
             select: 'brand model regno'
@@ -45,7 +45,7 @@ module.exports = function(app,passport){
 	passport.authenticate('facebook-token',{session: false}),
 	function(req,res){
 		if(req.user){
-			Appo.findOne({cust:req.query._id,regno:req.query.regno},
+			Appo.findOne({cust:req.user._id,regno:req.query.regno},
 			function(err,results){
 			if(results!==null){
 				 res.send('Bike already has an appointment');
@@ -62,7 +62,7 @@ module.exports = function(app,passport){
 					},function(err,results){
 						if(err) throw err
                         //include email code here
-                        mailController(app);
+                        //mailController(app);
 						res.send('Appointment Booked.Thank you!!');
 					})
 				}
@@ -81,8 +81,8 @@ module.exports = function(app,passport){
 	passport.authenticate('facebook-token',{session: false}),
 	function(req,res){
 		if(req.user){
-			Appo.findOneAndUpdate({email:req.params.uid,regno:req.params.reg},
-				{servicedt : req.params.dt},
+			Appo.findOneAndUpdate({cust:req.user._id,regno:req.query.reg},
+				{servicedt : req.query.dt},
 								{new: true},
 				function(err,results){ 
 				
@@ -104,7 +104,7 @@ module.exports = function(app,passport){
 	passport.authenticate('facebook-token',{session: false}),
 	function(req,res){
 		if(req.user){
-			Appo.remove( {email:req.query.email,regno:req.query.regno},
+			Appo.remove( {cust:req.user._id,regno:req.query.regno},
 					 function(err,results){
 					if(err) throw err;
 					 	if(results.result.n !== 0){

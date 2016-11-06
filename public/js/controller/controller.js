@@ -1,3 +1,13 @@
+//initialize gapi asynchronously
+var initgapi=function(){
+    gapi.load('auth2',function(){
+        gapi.auth2.init({
+        client_id: '1094664898379-8u0muh9eme8nnvp95dafuc3rvigu4j9u.apps.googleusercontent.com'
+        // Additional optional params
+        });
+    });    
+}
+
 ub.controller('mainController',['$scope','$log','$http','auth','$location','$anchorScroll','$routeParams','bike',"$location","$window",function($scope,$log,$http,auth,$location,$anchorScroll,$routeParams,bike,$location,$window){
 	
     $scope.profpic="";
@@ -37,7 +47,7 @@ ub.controller('mainController',['$scope','$log','$http','auth','$location','$anc
                 $scope.usr.access_token=auth.getAccesstoken();  
                 $scope.msg= response.msg;
                 $scope.profpic=auth.profpic;
-                
+                $scope.menu= response.menu;
                 bike.getbikes($scope.usr).then(function(response){
                    
                     if (response.length ==0)
@@ -58,10 +68,6 @@ ub.controller('mainController',['$scope','$log','$http','auth','$location','$anc
             
         };//fblogin
     
-    $scope.fbloginnew=function(){
-        auth.fbloginnew();
-    };//fbloginnew
-  
     $scope.fblogout = function(){
         
         auth.fblogout().then(
@@ -77,8 +83,10 @@ ub.controller('mainController',['$scope','$log','$http','auth','$location','$anc
         
     //fblogout
     
-    $scope.gonlogin= function(googleUser){
-        auth.gonlogin(googleUser).then(
+    
+    
+    $scope.gonlogin= function(){
+        auth.gonlogin().then(
                 function(response){
                     
                 $scope.isAuth = auth.isAuth;

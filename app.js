@@ -14,7 +14,7 @@ var passport = require('passport');
 }));*/
 
 //var setupController = require('./controllers/setupController.js');
-var apiController = require('./controllers/apiController.js');
+var profController = require('./controllers/profController.js');
 var apibike = require('./controllers/apibike.js');
 var appoController = require('./controllers/appoController.js');
 var authController = require('./controllers/authController.js');
@@ -48,7 +48,7 @@ pp(passport);
 //router(app,passport);
 //  app.use(app.router);
 
-apiController(app,passport);
+profController(app,passport);
 apibike(app,passport);
 appoController(app,passport);
 //authController(app,passport);

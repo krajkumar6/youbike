@@ -32,7 +32,10 @@ ub.service('auth',["$http","$log","$q","$cookies",function($http,$log,$q,$cookie
               $http({
                 method: 'POST',
                 url:"/auth/facebook/accesstoken",
-                params:{access_token:FB.getAuthResponse().accessToken}
+                //params:{access_token:FB.getAuthResponse().accessToken}
+                headers:{
+                Authorization : "Bearer " + auth.getAccesstoken()
+                } 
                 }).then(function successCallback(srresponse){
                   
                   self.userobj=srresponse.data;
@@ -95,11 +98,23 @@ ub.service('auth',["$http","$log","$q","$cookies",function($http,$log,$q,$cookie
       }); //$http 
     };
     
-    this.gonlogin =function(googleUser){
+    this.gonlogin =function(){
         var deferred = $q.defer();
-        var profile = googleUser.getBasicProfile();
+        //var profile = googleUser.getBasicProfile();
+        var GoogleAuth=gapi.auth2.getAuthInstance();
+        //var GoogleUser= GoogleAuth.currentUser.get();
+        //var AuthResponse =GoogleUser.getAuthResponse();
+        //$log.log('AuthResponse:',AuthResponse);
         
-        self.accesstoken = googleUser.accessToken;
+        GoogleAuth.signIn({
+          'scope': 'profile email'
+        }).then(function(response){
+            $log.log('response:',response);
+        },function(reason){
+            $log.log('reason:',reason);
+        });
+        
+        self.accesstoken = AuthResponse.access_token ;
         $cookies.put('acctoken',self.accesstoken);
         
         $http({
@@ -202,7 +217,7 @@ ub.service('auth',["$http","$log","$q","$cookies",function($http,$log,$q,$cookie
     }
 }]);
 
-ub.service('formsub',["$http","$log","$q","$timeout","$cookies",function($http,$log,$q,$timeout,$cookies){
+ub.service('formsub',[ 'auth',"$http","$log","$q","$timeout","$cookies",function(auth,$http,$log,$q,$timeout,$cookies){
     var user={};
     var self=this;
     
@@ -212,7 +227,10 @@ ub.service('formsub',["$http","$log","$q","$timeout","$cookies",function($http,$
         $http({
             method:"POST",
             url: "http://localhost:3000/api/updprof",
-            params: user
+            params: user,
+            headers:{
+                Authorization : "Bearer " + auth.getAccesstoken()
+            }                       
             }).then(
                     function successCallback(srresponse){
                     $log.log("Posted Object: ",srresponse.config.params);
@@ -260,10 +278,8 @@ ub.service('bike',['$http','auth','$log','$q','$base64',function($http,auth,$log
         $http({
             method:"GET",
             url:"http://localhost:3000/api/getbikes",
-            //params:{access_token:auth.getAccesstoken()}
-            //params:user,
             headers:{
-                access_token: $base64.encode(auth.getAccesstoken())
+                Authorization : "Bearer " + auth.getAccesstoken()
             }                       
         }).then(function successCallback(srresponse){
             deferred.resolve(srresponse.data);
@@ -281,7 +297,10 @@ ub.service('bike',['$http','auth','$log','$q','$base64',function($http,auth,$log
         $http({
             method:"GET",
             url:"http://localhost:3000/api/getbikeappo",
-            params: user
+            params: user,
+            headers:{
+                Authorization : "Bearer " + auth.getAccesstoken()
+            } 
         }).then(function successCallback(srresponse){
             deferred.resolve(srresponse.data);
         }, 
@@ -299,7 +318,10 @@ ub.service('bike',['$http','auth','$log','$q','$base64',function($http,auth,$log
         $http({
             method:"DELETE",
             url:"http://localhost:3000/api/delbike",
-            params: bike
+            params: bike,
+            headers:{
+                Authorization : "Bearer " + auth.getAccesstoken()
+            } 
         }).then(function successCallback(srresponse){
             deferred.resolve(srresponse.data);
         },function failureCallback(srresponse){
@@ -313,7 +335,10 @@ ub.service('bike',['$http','auth','$log','$q','$base64',function($http,auth,$log
         $http({
             method:"POST",
             url:"http://localhost:3000/api/regbike",
-            params: bike
+            params: bike,
+            headers:{
+                Authorization : "Bearer " + auth.getAccesstoken()
+            } 
         }
         ).then(function sucessCallback(srresponse){
             deferred.resolve(srresponse.data);
@@ -326,7 +351,7 @@ ub.service('bike',['$http','auth','$log','$q','$base64',function($http,auth,$log
     
 }]);
 
-ub.service('appo',['$http','$log','$q',function($http,$log,$q){
+ub.service('appo',['auth','$http','$log','$q',function(auth,$http,$log,$q){
     var user={};
     var appo={};
     //retrieve appos
@@ -335,7 +360,10 @@ ub.service('appo',['$http','$log','$q',function($http,$log,$q){
         $http({
             method:"GET",
             url:"http://localhost:3000/api/vappos",
-            params: user
+            params: user,
+            headers:{
+                Authorization : "Bearer " + auth.getAccesstoken()
+            } 
         }).then(function successCallback(srresponse){
             deferred.resolve(srresponse.data);
         }, 
@@ -353,7 +381,10 @@ ub.service('appo',['$http','$log','$q',function($http,$log,$q){
         $http({
             method:"DELETE",
             url:"http://localhost:3000/api/dappos",
-            params: appo
+            params: appo,
+            headers:{
+                Authorization : "Bearer " + auth.getAccesstoken()
+            } 
         }).then(function successCallback(srresponse){
             deferred.resolve(srresponse.data);
         },function failureCallback(srresponse){
@@ -368,7 +399,10 @@ ub.service('appo',['$http','$log','$q',function($http,$log,$q){
         $http({
             method:"POST",
             url:"http://localhost:3000/api/cappos",
-            params: appo
+            params: appo,
+            headers:{
+                Authorization : "Bearer " + auth.getAccesstoken()
+            } 
         }
         ).then(function sucessCallback(srresponse){
             deferred.resolve(srresponse.data);

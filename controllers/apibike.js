@@ -12,7 +12,8 @@ module.exports = function(app,passport){
         passport.authenticate('facebook-token',{session: false}),
         function(req,res){
             if(req.user){
-                ubBike.find({email:req.query.email,regno:req.query.regno},
+                ubBike.find({cust:req.user._id,
+                             regno : req.query.regno},
                 function(err,bikes){
                     if(err) throw err;
                     if(bikes.length==0){
@@ -32,6 +33,7 @@ module.exports = function(app,passport){
                     }
                     else
                     {
+                    console.log('Bike already registered');
                     res.send('Bike already registered');
                     }
                 });
@@ -53,7 +55,7 @@ module.exports = function(app,passport){
         // console.log('req.query :',req.query);
             var msg="";
             ubBike
-                .find({cust:req.query._id})
+                .find({cust:req.user._id})
                 .populate('cust','email')
                 .exec(function(err,bikes){
                     res.send(bikes);
@@ -95,7 +97,7 @@ module.exports = function(app,passport){
                         {
                             "$match":
                             {
-                                "cust" : mongoose.Types.ObjectId(req.query._id)
+                                "cust" : mongoose.Types.ObjectId(req.user._id)
                             }
                         },
                         {
@@ -134,7 +136,7 @@ module.exports = function(app,passport){
     passport.authenticate('facebook-token',{session: false}),
     function(req,res){
         if(req.user){
-            ubBike.remove({regno:req.query.regno,cust:req.query.usr_id},
+            ubBike.remove({regno:req.query.regno,cust:req.user._id},
             function(err,results){
 			if(err) throw err;
 			 if(results.result.n==0)
