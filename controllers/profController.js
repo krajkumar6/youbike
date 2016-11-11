@@ -25,10 +25,25 @@ module.exports = function (app,passport){
       }
     );
     
-   	
+   	app.get('/auth/google/accesstoken',
+      passport.authenticate('google-token',{session: false}),     
+      function (req, res) {
+        // do something with req.user
+        console.log('Im in the google auth middleware');
+        if(req.user){
+            req.user.menu=usermenu;
+            console.log('fb user authenticated');
+            res.send(req.user);
+        }
+        else{
+            console.log('no entry');
+            res.sendStatus(401);
+        }
+      }
+    );
 	//section to Update user profile information
 	app.post('/api/updprof*',
-		passport.authenticate('facebook-token',{session: false}),
+		passport.authenticate(['facebook-token','google-token'],{session: false}),
 		function(req,res){
 			if(req.user){
 				console.log("In update profile api");
@@ -59,7 +74,7 @@ module.exports = function (app,passport){
 	
 	//section to Read user profile information
 	app.get('/api/getprof*',
-            passport.authenticate('facebook-token',{session: false}),
+            passport.authenticate(['facebook-token','google-token'],{session: false}),
             function(req,res){
         if(req.user){
 		console.log('In getprofile api');

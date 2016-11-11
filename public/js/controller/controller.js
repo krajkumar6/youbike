@@ -1,12 +1,14 @@
-//initialize gapi asynchronously
-var initgapi=function(){
+var gapiinit=function(){
+    console.log('in gapiinit');
     gapi.load('auth2',function(){
-        gapi.auth2.init({
-        client_id: '1094664898379-8u0muh9eme8nnvp95dafuc3rvigu4j9u.apps.googleusercontent.com'
-        // Additional optional params
-        });
-    });    
-}
+       auth2 = gapi.auth2.init({
+            client_id: '1094664898379-8u0muh9eme8nnvp95dafuc3rvigu4j9u.apps.googleusercontent.com',
+            fetch_basic_profile: true,
+            scope: 'profile'
+            });            
+        });//gapi.load
+    };
+
 
 ub.controller('mainController',['$scope','$log','$http','auth','$location','$anchorScroll','$routeParams','bike',"$location","$window",function($scope,$log,$http,auth,$location,$anchorScroll,$routeParams,bike,$location,$window){
 	
@@ -83,10 +85,12 @@ ub.controller('mainController',['$scope','$log','$http','auth','$location','$anc
         
     //fblogout
     
+    $scope.ublogout=function(){
+        auth.ublogout();
+    };
     
-    
-    $scope.gonlogin= function(){
-        auth.gonlogin().then(
+    $scope.glogin= function(){
+        auth.glogin().then(
                 function(response){
                     
                 $scope.isAuth = auth.isAuth;
@@ -113,36 +117,6 @@ ub.controller('mainController',['$scope','$log','$http','auth','$location','$anc
             })
             
         };//glogin
-    
-    $scope.gloginnew=function(){
-        $log.log("in gloginnew()");
-        auth.gloginnew().then(
-                function(response){
-                    
-                $scope.isAuth = auth.isAuth;
-                $scope.usr =auth.user;
-                $log.log('$scope.usr',$scope.usr);
-                //$scope.msg= response.msg;
-                //$scope.profpic=auth.profpic;
-                
-                bike.getbikes($scope.usr).then(function(response){
-                   
-                    if (response.length ==0)
-                    {
-                    $location.path('/addbike');//redirect to addbike screen    
-                    }
-                    else{
-                    $location.path('/appoint');//else redirect to view appointment screen
-                    }
-                },function(reason){
-                    $scope.msg1 = reason;
-                });//getbikes
-                  
-                            
-            },function(reason){
-                 $log.log("fblogin() - failure :Need to login to the application :"+reason);
-            });
-    };//gloginnew
     
     $scope.glogout = function(){
         

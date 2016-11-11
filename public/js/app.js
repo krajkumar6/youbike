@@ -1,6 +1,6 @@
 var ub = angular.module('ub',['ngMaterial','ngRoute','ngCookies','base64']);
 
-ub.run([function(){
+ub.run(['$rootScope','$location','auth',function($rootScope,$location,auth){
 
 // This is called with the results from from FB.getLoginStatus().
     function statusChangeCallback(response) {
@@ -12,7 +12,7 @@ ub.run([function(){
     // for FB.getLoginStatus().
     if (response.status === 'connected') {
       // Logged into your app and Facebook.
-      auth.testAPI();
+      $location.path('/');
     } else if (response.status === 'not_authorized') {
       // The person is logged into Facebook, but not your app.
       console.log('Pls log in to the app');
@@ -62,7 +62,20 @@ window.fbAsyncInit = function() {
 }(document, 'script', 'facebook-jssdk'));
 
 //initialize the GoogleAuth object
-
-
+    
+var gapify=function(){
+    console.log('hi gapify');
+    auth.gapiinit();
+}
+    
+// registering a listener for $routeChangeStart event
+$rootScope.$on('$routeChangeStart',function(event,next,current){
+if(next.$$route.authenticated){
+    var userAuth = auth.getAccesstoken();
+    if(!userAuth){
+        $location.path('/');
+    }
+  }
+});
     
 }]);//run

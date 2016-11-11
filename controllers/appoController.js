@@ -8,7 +8,7 @@ module.exports = function(app,passport){
 	
 	//section to retreive appointments
 	app.get('/api/vappos*',
-	passport.authenticate('facebook-token',{session: false}),
+	passport.authenticate(['facebook-token','google-token'],{session: false}),
 	function(req,res){
 		if(req.user){
 			console.log("In view appointment api");
@@ -42,7 +42,7 @@ module.exports = function(app,passport){
 	//section to create an appointment
 	
 	app.post('/api/cappos*',
-	passport.authenticate('facebook-token',{session: false}),
+	passport.authenticate(['facebook-token','google-token'],{session: false}),
 	function(req,res){
 		if(req.user){
 			Appo.findOne({cust:req.user._id,regno:req.query.regno},
@@ -78,7 +78,7 @@ module.exports = function(app,passport){
 	
 	//section to update an appointment
 	app.post('/api/uappos*',
-	passport.authenticate('facebook-token',{session: false}),
+	passport.authenticate(['facebook-token','google-token'],{session: false}),
 	function(req,res){
 		if(req.user){
 			Appo.findOneAndUpdate({cust:req.user._id,regno:req.query.reg},
@@ -101,7 +101,7 @@ module.exports = function(app,passport){
 	
 	//section to delete an appointment
 	app.delete('/api/dappos*',
-	passport.authenticate('facebook-token',{session: false}),
+	passport.authenticate(['facebook-token','google-token'],{session: false}),
 	function(req,res){
 		if(req.user){
 			Appo.remove( {cust:req.user._id,regno:req.query.regno},

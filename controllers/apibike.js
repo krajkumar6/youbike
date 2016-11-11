@@ -9,7 +9,7 @@ module.exports = function(app,passport){
 	//section to register bike
 	
 	app.post('/api/regbike*',
-        passport.authenticate('facebook-token',{session: false}),
+        passport.authenticate(['facebook-token','google-token'],{session: false}),
         function(req,res){
             if(req.user){
                 ubBike.find({cust:req.user._id,
@@ -48,7 +48,7 @@ module.exports = function(app,passport){
     //api to get all registered bikes
     
     app.get('/api/getbikes',
-    passport.authenticate('facebook-token',{session: false}),
+    passport.authenticate(['facebook-token','google-token'],{session: false}),
     function(req,res){
         if(req.user){
             console.log('In getbikes api');
@@ -84,7 +84,7 @@ module.exports = function(app,passport){
             });
 	});*/
     app.get('/api/getbikeappo*',
-    passport.authenticate('facebook-token',{session: false}),
+    passport.authenticate(['facebook-token','google-token'],{session: false}),
     function(req,res){
         if(req.user){
                 console.log('In getbikeappo api');
@@ -133,7 +133,7 @@ module.exports = function(app,passport){
 	//section to remove a bike
 	
 	app.delete('/api/delbike*',
-    passport.authenticate('facebook-token',{session: false}),
+    passport.authenticate(['facebook-token','google-token'],{session: false}),
     function(req,res){
         if(req.user){
             ubBike.remove({regno:req.query.regno,cust:req.user._id},

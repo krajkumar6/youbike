@@ -58,6 +58,7 @@ ub.config(function($routeProvider){
     
 });
 
+/*
 ub.run(['$rootScope','$location','auth',function($rootScope,$location,auth){
 
 // registering a listener for $routeChangeStart event
@@ -70,4 +71,4 @@ ub.run(['$rootScope','$location','auth',function($rootScope,$location,auth){
       }
 });
     
-}]);
+}]);*/
