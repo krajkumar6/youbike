@@ -13,15 +13,18 @@ var custSchema = new Schema(
 	city : String,
 	pincode : String,
 	gender : String,
+    lastUpddt : { type: Date, default: Date.now },
     facebook : {
         id: String,
         token : String,
-        name : String
+        name : String,
+        lastUpddt : { type: Date, default: Date.now }
     },
     google : {
         id: String,
         token : String,
-        name : String
+        name : String,
+        lastUpddt : { type: Date, default: Date.now }
     }
 })
 

@@ -9,7 +9,8 @@ var Bikesch= new Schema(
 	year : String,
 	kms  : Number,
 	regno : String,
-	cust : { type: Schema.Types.ObjectId, ref: 'Customer' }
+	cust : { type: Schema.Types.ObjectId, ref: 'Customer' },
+    lastUpddt : { type: Date, default: Date.now }
 }
 );
 

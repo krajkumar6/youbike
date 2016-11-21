@@ -1,10 +1,13 @@
 var Auth = require('./auth.js');
 var ubCust = require('../models/ubCust.js');
+var bodyParser = require('body-parser');
 
 //var FacebookStrategy = require('passport-facebook').Strategy;
 var FacebookTokenStrategy = require('passport-facebook-token');
 
-var GoogleTokenStrategy = require('passport-google-token').Strategy;
+//var GoogleTokenStrategy = require('passport-google-token').Strategy;
+var GooglePlusStrategy = require('passport-google-plus');
+//var GooglePlusTokenStrategy = require('passport-google-plus-token');
 
 //var FacebookStrategy = require('passport-facebook').Strategy;
 
@@ -31,15 +34,13 @@ passport.use(new FacebookTokenStrategy({
                   return done(err);
               if(user)
               {
-                if(user.google.id)
+                console.log('In fb auth middleware');
+                if(user.google.id && !user.facebook.id)
                 {
                     user.facebook.id = profile.id;
                     user.facebook.token = accessToken;
                     user.facebook.fname = profile.name.givenName;
                     user.facebook.lname = profile.name.familyName;
-                    user.fname = profile.name.givenName;
-                    user.lname = profile.name.familyName;
-                    user.email = profile.emails[0].value;
                     user.save(function(err){
                             if (err)
                                 throw err;
@@ -72,10 +73,11 @@ passport.use(new FacebookTokenStrategy({
       }
 ));
    
-passport.use(new GoogleTokenStrategy ({
-    clientID: Auth.googleAuth.clientID,
-    clientSecret: Auth.googleAuth.clientSecret    
-  },  function(accessToken, refreshToken, profile, done) {
+passport.use(new GooglePlusStrategy  ({
+    clientId: Auth.googleAuth.clientID,
+    clientSecret: Auth.googleAuth.clientSecret
+    //passReqToCallback: true
+  },  function(tokens, profile, done) {
     // Create or update user, call done() when complete...
      process.nextTick(function(){
         ubCust.findOne({'email' : profile.emails[0].value}, function(err, user) {
@@ -96,6 +98,7 @@ passport.use(new GoogleTokenStrategy ({
                             if (err)
                                 throw err;
                             return done(null,user);
+                        
                         });
                 }
                 else

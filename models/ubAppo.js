@@ -8,7 +8,8 @@ var Apposch = new Schema(
     reqdt : Date,
 	status : String,
 	bike : { type: Schema.Types.ObjectId, ref: 'Bike' },
-    cust : { type: Schema.Types.ObjectId, ref: 'Customer' }
+    cust : { type: Schema.Types.ObjectId, ref: 'Customer' },
+    lastUpddt : { type: Date, default: Date.now }
 }
 );
 

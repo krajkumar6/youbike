@@ -3,6 +3,8 @@ var app = express();
 var mongoose = require('mongoose');
 var config = require('./config');
 var passport = require('passport');
+var bearerToken = require('express-bearer-token');
+app.use(bearerToken());
 //var cookieParser = require('cookie-parser');
 //app.use(cookieParser());
 //var session = require('express-session');

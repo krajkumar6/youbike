@@ -14,12 +14,13 @@ module.exports = function(appo){
         }
     });
     
-    var text = 'Appointment Details \n\n' + Bike + appo. ;
+    var text = 'Appointment Details \n\n' + 'Bike Make: ' + appo.bike.brand + '\n\nBike Model: ' + appo.bike.model + '\n\nBike Year: ' + appo.bike.year +'\n\nRegistration No: ' + appo.bike.regno;
+    
     var mailOptions = {
         from: 'youbikecs@gmail.com', // sender address
-        to: appo.usr_email, // list of receivers
+        //to: appo.cust.email, // list of receivers
         bcc:'youbikecs@gmail.com',
-        subject: 'Test Appointment for '+ appo.appoidt, // Subject line
+        subject: 'Test Appointment for '+ appo.appoidt.toDateString(), // Subject line
         text: text //, // plaintext body
         // html: '<b>Hello world ✔</b>' // You can choose to send an HTML body instead
     };
@@ -27,10 +28,10 @@ module.exports = function(appo){
     transporter.sendMail(mailOptions, function(error, info){
         if(error){
         console.log(error);
-        res.json({yo: 'error'});
+        //res.json({yo: 'error'});
         }else{
         console.log('Message sent: ' + info.response);
-        res.json({yo: info.response});
+        //res.json({yo: info.response});
         };
     });
     

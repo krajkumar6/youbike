@@ -11,11 +11,11 @@ module.exports = function(app,passport){
       passport.authenticate('facebook', { successRedirect: '/api/getprofauth',
                                           failureRedirect: '/' }));
     
-    app.get('/auth/google', 
+   /* app.get('/auth/google', 
         passport.authenticate('google',{scope:  ['email','profile']})
     );
             
-    app.get('/auth/google/callback',
+    /*app.get('/auth/google/callback',
             passport.authenticate('google', {failureRedirect: '/'}),
            function(req, res) {
             console.log('auth success!! ',req.isAuthenticated(),req.user);
