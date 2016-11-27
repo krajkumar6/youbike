@@ -90,7 +90,7 @@ module.exports = function(app,passport){
             passport.authenticate('facebook-token',{session: false}),	
             
             function(req,res){
-                console.log('req.user',req.user);
+                //console.log('req.user',req.user);
                 if(req.user){
                     console.log('In getbikes api');
                 // console.log('req.query :',req.query);

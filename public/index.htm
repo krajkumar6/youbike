@@ -95,13 +95,25 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand page-scroll" href="#/">Youbike</a>
+                <a ng-if="!isAuth" style="padding-top: 0px;padding-bottom: 0px;"    
+ class="navbar-brand page-scroll" href="#/">
+                <img style="margin-top: 5px; margin-bottom: 5px; height: 40px;" src="../img/logo.png"></img></a>
+            
+                <a ng-if="isAuth" style="padding-top: 0px;padding-bottom: 0px;" class="navbar-brand page-scroll" href="#/fthome">
+                    <img style="margin-top: 5px; margin-bottom: 5px; height: 40px;" src="../img/logo.png"></img></a>
             </div>
 
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="navbar" >
-                <ul class="nav navbar-nav navbar-right">                 
-                    <li>
+                <ul class="nav navbar-nav navbar-right">
+                    <li ng-repeat="item in menu">
+                        <a ng-if="!isAuth" class="page-scroll" href="#/home/{{$index+1}}" >{{item}}</a>
+                        <a ng-if="isAuth && item=='Logout'" class="page-scroll" ng-click="ublogout()">{{item}}</a>
+                        
+                        <a ng-if="isAuth && item!='Logout'" class="page-scroll" href="#/{{item}}" >{{item}}</a>
+                    </li>
+                    
+                    <!--<li>
                         <a class="page-scroll" href="#/home/2">Services</a>
                     </li>
                     <li>
@@ -129,14 +141,15 @@
                         <a class="page-scroll" href="#/home/4">Contact Us</a>
                     </li>
                     <li>
-                        <a class="page-scroll" href="#/logout" ng-click="fblogout()">Logout</a>
+                        <a class="page-scroll" href="#/logout" ng-click="ublogout()">Logout</a>
+                    </li> -->
+                    <li ng-if="isAuth">
+                      <a class="page-scroll" href="" >{{usr.fname}}</a>
                     </li>
-                    <li class="page-scroll" id='profpic'>
+                    <li id="profpic" class="page-scroll" >
                       
-                    </li>
-                   <!--<li>
-					<div class="fb-login-button" data-max-rows="1" data-size="medium" data-show-faces="false" data-auto-logout-link="true" scope="public_profile,email"></div>
-					</li>-->
+                    </li> 
+                   
                 </ul>
             </div>
             <!-- /.navbar-collapse -->
@@ -149,8 +162,39 @@
 <ng-view>
 </ng-view>
     
+<footer id="" class='footer navbar-fixed-bottom' ng-hide="!isAuth" style="height:175px">
 
-	
+<section class="bg-primary" id="footer" style="height:175px;padding:20px">
+        <div class="container-fluid" style="padding-top:20px;padding-bottom:20px">
+            <div class="row">
+                <div class="col-lg-2 col-lg-offset-1 text-center">
+                    <h4><a href="#/ftservices">Services</a></h4>
+                </div>
+                <div class="col-lg-2  text-center">
+                    <h4><a href="#/ftpricing">Pricing</a></h4>                    
+                </div>
+                <div class="col-lg-2  text-center">
+                    <h4><a href="#/ftabout">About Us</a></h4>                    
+                </div>
+                <div class="col-lg-2  text-center">
+                    <h4><a href="#/ftfaq">FAQ</a></h4>                    
+                </div>
+                <div class="col-lg-2  text-center">
+                    <h4><a href="">Contact Us</a></h4>
+                    <br>
+                    <p class="text-hi">988-405-1340</p>
+                    <p><a class="text-hi" href="mailto:your-email@your-domain.com">youbikecs@gmail.com</a></p>
+                </div>
+                            
+            </div>
+        </div>
+    </section>
+
+
+
+</footer>
+
+
 </body>
 
 </html>

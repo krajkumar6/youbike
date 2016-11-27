@@ -11,52 +11,68 @@ ub.config(function($routeProvider){
 		controller:'mainController'
 	})
 	
-	.when('/signup',{
+	.when('/Register/Login',{
 		templateUrl: '../pages/signup.htm',
 		controller:'mainController'
 	})
     
-    .when('/logout',{
+    .when('/Logout',{
 		templateUrl: '../pages/home.htm',
 		controller:'mainController'
 	})
     
-    .when('/vprofile',{
+    .when('/Profile',{
 		templateUrl: '../pages/vprofile.htm',
 		controller:'profctrl'
  //       authenticated: true
     })
     
-    .when('/vbike',{
+    .when('/Bikes',{
 		templateUrl: '../pages/vbike.htm',
-		controller:'bikectrl',
-        authenticated: true
+		controller:'bikectrl'
     })
     
     .when('/addbike',{
 		templateUrl: '../pages/addbike.htm',
-		controller:'bikectrl',
-        authenticated: true
+		controller:'bikectrl'
     })
     
       .when('/uprofile',{
 		templateUrl: '../pages/uprofile.htm',
-		controller:'profctrl',
-        authenticated: true
+		controller:'profctrl'
     })
 	
-    .when('/appoint',{
+    .when('/Appointment',{
 		templateUrl: '../pages/vappo.htm',
-		controller:'apctrl',
-        authenticated: true
+		controller:'apctrl'
 	})
     .when('/addappo',{
 		templateUrl: '../pages/addappo.htm',
-		controller:'apctrl',
-        authenticated: true
+		controller:'apctrl'
+	})
+    
+    .when('/ftservices',{
+		templateUrl: '../pages/signedin/services.htm'
+	})
+    
+    .when('/ftabout',{
+		templateUrl: '../pages/signedin/about.htm'
+	})
+    
+    .when('/ftfaq',{
+		templateUrl: '../pages/signedin/faq.htm'
+	})
+    
+    .when('/ftpricing',{
+		templateUrl: '../pages/signedin/pricing.htm'
+	})
+    
+    .when('/fthome',{
+		templateUrl: '../pages/signedin/home.htm'
 	})
     
 });
+
 
 /*
 ub.run(['$rootScope','$location','auth',function($rootScope,$location,auth){

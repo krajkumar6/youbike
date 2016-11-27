@@ -1,67 +1,90 @@
 var gapiinit=function(){
-    console.log('in gapiinit');
+    //console.log('in gapiinit');
     gapi.load('auth2',function(){
        auth2 = gapi.auth2.init({
             client_id: '1094664898379-8u0muh9eme8nnvp95dafuc3rvigu4j9u.apps.googleusercontent.com',
-            fetch_basic_profile: true,
-            scope: 'profile'
+            fetch_basic_profile: true            
             });            
         });//gapi.load
     };
 
 
-ub.controller('mainController',['$scope','$log','$http','auth','$location','$anchorScroll','$routeParams','bike',"$location","$window",function($scope,$log,$http,auth,$location,$anchorScroll,$routeParams,bike,$location,$window){
+ub.controller('mainController',['$scope','$log','$http','auth','$location','$anchorScroll','$routeParams','bike',"$location","$window","$rootScope",function($scope,$log,$http,auth,$location,$anchorScroll,$routeParams,bike,$location,$window,$rootScope){
 	
     $scope.profpic="";
-    $scope.msg="";
-    $scope.isAuth = false;
-    $scope.usr ={};
+    $rootScope.testmsg="raj";
+    $rootScope.isAuth = false;
+    $rootScope.menu =['Services','Pricing','Appointment','Signup','About','FAQ','Contact Us'];
+    
+    $rootScope.usr ={};
     var googleUser ={};
+    var usermenu=["Profile","Appointment","Bikes","Logout"];
     
 	switch($routeParams.id)
 	{
+		case "1":
+		$location.hash('Services');		
+		$anchorScroll();
+		break;
 		case "2":
-		$location.hash('services');		
+		$location.hash('Pricing');		
 		$anchorScroll();
 		break;
-		case "3":
-		$location.hash('about');		
+        case "3":
+		$location.hash('Signup');		
 		$anchorScroll();
 		break;
-		case "4":
-		$location.hash('contact');		
+        case "4":
+		$location.hash('Signup');		
+		$anchorScroll();
+		break;
+        case "5":
+		$location.hash('About');		
+		$anchorScroll();
+		break;
+        case "6":
+		$location.hash('FAQ');		
 		$anchorScroll();
         break;
-        case "5":
-		$location.hash('faq');		
+		case "7":
+		$location.hash('Contact Us');		
 		$anchorScroll();
+        break;
+        
 		
 	};
     
-	
     
     $scope.fblogin= function(){
         auth.fblogin().then(
                 function(response){
                     
-                $scope.isAuth = auth.isAuth;
-                $scope.usr =auth.getResponseobj();
-                $scope.usr.access_token=auth.getAccesstoken();  
+                $rootScope.isAuth = true;
+                $rootScope.menu = usermenu;
+                    
+                $log.log('isAuth:',$scope.isAuth);
+                $rootScope.usr =auth.getResponseobj();
+                $rootScope.usr.access_token=auth.getAccesstoken();  
                 $scope.msg= response.msg;
-                $scope.profpic=auth.profpic;
-                $scope.menu= response.menu;
-                bike.getbikes($scope.usr).then(function(response){
+                $rootScope.usr.profpic=auth.profpic;
+                
+                
+                $log.log('$rootScope.usr',$rootScope.usr);
+                    
+                bike.getbikes().then(function(bikeresp){
                    
-                    if (response.length ==0)
+                    if (bikeresp.length ==0)
                     {
                     $location.path('/addbike');//redirect to addbike screen    
                     }
                     else{
-                    $location.path('/appoint');//else redirect to view appointment screen
+                    $location.path('/Appointment');//else redirect to view appointment screen
+                    
                     }
-                },function(reason){
-                    $scope.msg1 = reason;
+                },function(bikereas){
+                    $scope.msg1 = bikereas;
                 });//getbikes
+                    
                   
                             
             },function(reason){
@@ -69,7 +92,7 @@ ub.controller('mainController',['$scope','$log','$http','auth','$location','$anc
             })
             
         };//fblogin
-    
+    /*
     $scope.fblogout = function(){
         
         auth.fblogout().then(
@@ -82,30 +105,27 @@ ub.controller('mainController',['$scope','$log','$http','auth','$location','$anc
         }
         );
     };
+    */
         
     //fblogout
-    
-    $scope.ublogout=function(){
-        auth.ublogout();
-    };
     
     $scope.glogin= function(){
         auth.glogin().then(
                 function(response){
                     
-                $scope.isAuth = auth.isAuth;
-                $scope.usr =auth.getResponseobj();  
+                $rootScope.isAuth = true;
+                $rootScope.usr =auth.getResponseobj();  
                 $scope.msg= response.msg;
-                $scope.profpic=auth.profpic;
+                $rootScope.usr.profpic=auth.profpic;
                 
-                bike.getbikes($scope.usr).then(function(response){
-                   
+                bike.getbikes($rootScope.usr).then(function(response){
+                   $log.log('response',response);
                     if (response.length ==0)
                     {
                     $location.path('/addbike');//redirect to addbike screen    
                     }
                     else{
-                    $location.path('/appoint');//else redirect to view appointment screen
+                    $location.path('/Appointment');//else redirect to view appointment screen
                     }
                 },function(reason){
                     $scope.msg1 = reason;
@@ -118,7 +138,21 @@ ub.controller('mainController',['$scope','$log','$http','auth','$location','$anc
             
         };//glogin
     
-    $scope.glogout = function(){
+    $scope.ublogout=function(){
+        auth.ublogout().then(function(response){
+            $rootScope.isAuth = false;
+            $rootScope.usr={};
+            $location.path('/');
+            $window.location.reload();
+            $log.log('Logged out successfully:',response);
+        },function(reason){
+            $log.error('Log out error:',reason);
+        });
+    };
+    
+  
+    
+    /*$scope.glogout = functinon(){
         
         auth.glogout().then(
         function(response){
@@ -129,7 +163,7 @@ ub.controller('mainController',['$scope','$log','$http','auth','$location','$anc
             $scope.msg="Google Logout Error!! Pls check Logs";
         }
         );
-    }; //glogout
+    };*/ //glogout
     
 }]);//mainController
 
@@ -146,7 +180,7 @@ ub.controller('profctrl',["$scope","auth","formsub","$log","$timeout","$location
                 $scope.msg=response.msg;
                 $scope.usr = auth.getResponseobj();
                 $log.log('$scope.usr',$scope.usr);
-                $location.path('/vprofile');
+                $location.path('/Profile');
                 },function(reason){
                 $scope.msg=reason.msg;
             });
@@ -158,18 +192,23 @@ ub.controller('apctrl',["$scope","auth","$log","appo","bike","$location",functio
     $scope.usr= auth.getResponseobj();
     $scope.appos = {};
     $scope.newappo = [];
+    
     $scope.selected = {value: null};
-    var idx;    
+    var idx;
+    
         
     $scope.myDate = new Date();
+    
     $scope.minDate = new Date(
        $scope.myDate.getFullYear(),
        $scope.myDate.getMonth(),
        $scope.myDate.getDate());
+    
     $scope.maxDate = new Date(
        $scope.myDate.getFullYear(),
        $scope.myDate.getMonth() + 1,
        $scope.myDate.getDate());
+    
     $scope.onlyWeekendsPredicate = function(date) {
        var day = date.getDay();
        return day === 0;
@@ -203,7 +242,7 @@ ub.controller('apctrl',["$scope","auth","$log","appo","bike","$location",functio
        $scope.newappo[idx].usr_email = $scope.usr.email;
         appo.addappo($scope.newappo[idx]).then(function(response){
            $scope.msg = response; 
-            $location.path('/appoint');
+            $location.path('/Appointment');
         },function(reason){
             $scope.msg = reason;
         });
@@ -222,7 +261,7 @@ ub.controller('bikectrl',["$scope","auth","$log","bike","$location",function($sc
     $scope.usr = auth.getResponseobj();
     $scope.bike.usr_id = $scope.usr._id;
     
-    bike.getbikes($scope.usr).then(function(response){
+    bike.getbikes($scope.usr._id).then(function(response){
         $scope.bikes = response;
         
     },function(reason){
@@ -243,7 +282,7 @@ ub.controller('bikectrl',["$scope","auth","$log","bike","$location",function($sc
         
         bike.subbike($scope.bike).then(function(response){
            $scope.msg= response;
-           $location.path('/vbike');
+           $location.path('/Bikes');
         },function(reason){
             $scope.msg=reason;
         });

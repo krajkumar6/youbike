@@ -7,6 +7,8 @@ ub.service('auth',["$http","$log","$q","$cookies",function($http,$log,$q,$cookie
     this.userobj = {};
     this.user = {};
     this.guser={};
+    this.auth_code;
+    this.signprov;
     var self=this;
     
 
@@ -24,8 +26,7 @@ ub.service('auth',["$http","$log","$q","$cookies",function($http,$log,$q,$cookie
             self.accesstoken = FB.getAuthResponse().accessToken;
             $cookies.put('acctoken',self.accesstoken);
             //access_token= FB.getAuthResponse().accessToken;
-            document.getElementById('status').innerHTML =
-            'Thanks for logging in, ' + response.first_name + '!';
+            
             document.getElementById('profpic').innerHTML =
             "<img src='" + response.picture.data.url + "'>";
             
@@ -36,13 +37,14 @@ ub.service('auth',["$http","$log","$q","$cookies",function($http,$log,$q,$cookie
                 url:"/auth/facebook/accesstoken",
                 //params:{access_token:FB.getAuthResponse().accessToken}
                 headers:{
-                Authorization : "Bearer " + auth.getAccesstoken()
+                Authorization : "Bearer " + self.accesstoken
                 } 
                 }).then(function successCallback(srresponse){
                   
                   self.userobj=srresponse.data;
-                  $log.log('facebook passport authenticated user:',srresponse.data);
+                  $log.log('facebook passport authenticated user:',srresponse);
                   $cookies.putObject('usrobj',srresponse.data);
+                  
                   tAdef.resolve(self.userobj);
             
                 },function errorCallback(srresponse){
@@ -61,7 +63,7 @@ ub.service('auth',["$http","$log","$q","$cookies",function($http,$log,$q,$cookie
         FB.login(function(response){
             
             if (response.status === 'connected') {
-                          
+                self.signprov='fb';         
                 self.userCrea().then(
                  function(resolved){
                      deferred.resolve(resolved);    
@@ -73,14 +75,14 @@ ub.service('auth',["$http","$log","$q","$cookies",function($http,$log,$q,$cookie
             } else if (response.status === 'not_authorized') {
               // The person is logged into Facebook, but not your app.
                 deferred.reject('not_authorized');
-                document.getElementById('status').innerHTML = 'Please log ' +
-                'into this app.';
+                //document.getElementById('status').innerHTML = 'Please log ' +
+                //'into this app.';
             } else {
               // The person is not logged into Facebook, so we're not sure if
               // they are logged into this app or not.
                  deferred.reject('not logged in');
-                document.getElementById('status').innerHTML = 'Please log ' +
-                'into Facebook.';
+                //document.getElementById('status').innerHTML = 'Please log ' +
+                //'into Facebook.';
             } 
             
         }); 
@@ -98,18 +100,26 @@ ub.service('auth',["$http","$log","$q","$cookies",function($http,$log,$q,$cookie
           'scope': 'profile email'
         }).then(function(response){
             self.gUser=response;
+            //$log.log('gUser',self.gUser);
+            //$log.log('fbresponse',self.fbresponse);
             self.accesstoken = self.gUser.getAuthResponse().access_token;
             $cookies.put('acctoken',self.accesstoken);
-            
+            document.getElementById('profpic').innerHTML =
+            "<img src='" + response.image.url + "'>";
+            //$log.log('self.accesstoken',self.accesstoken);
+            self.signprov='go';
+            //$log.log('authorization code',response.code);
+            //self.auth_code=response.code;
                $http({
-                method: 'GET',
+                method: 'POST',
                 url:"/auth/google/accesstoken",
-                //params:{access_token:self.accesstoken}
+                
                 headers:{
-                //Authorization : "Bearer " + self.accesstoken
-                Access_token:self.accesstoken
-                } 
-                }).then(function successCallback(srresponse){
+                Authorization : "Bearer " + self.accesstoken
+                //access_token : "Bearer "+self.accesstoken
+                
+                }
+               }).then(function successCallback(srresponse){
                   
                   self.userobj=srresponse.data;
                   $log.log('google passport authenticated user:',srresponse.data);
@@ -127,28 +137,33 @@ ub.service('auth',["$http","$log","$q","$cookies",function($http,$log,$q,$cookie
     
     this.ublogout=function(){
         var logdef= $q.defer();
+        
         if(self.fbresponse){
             FB.logout(function(response){
-            $log.log('logout response:'+ response);
+            $cookies.remove('acctoken');
+            $cookies.remove('resobj');
+            logdef.resolve(response);
             });
         }
-        else if(auth2)
+        else if(self.guser)
             {
-                auth2.signOut().then(function () {
-                    $log.log("Google user signed out");
+                auth2.signOut().then(function (response) {
+                    $cookies.remove('acctoken');
+                    $cookies.remove('resobj');
+                    logdef.resolve(response);
+                    //$log.log("Google user signed out");
                 });//signOut
             }
             else
                 {
                     $log.error('Logout error');
+                    logdef.reject('Logout error');
                 }
-        $cookies.remove('acctoken');
-        $cookies.remove('resobj');
-        logdef.resolve('logged out successfully');
+        
         return logdef.promise;
     };
     
-    this.fblogout = function(){
+    /*this.fblogout = function(){
         var logdef= $q.defer();
         FB.logout(function(response){
             $log.log('logout response:'+ response);
@@ -173,6 +188,7 @@ ub.service('auth',["$http","$log","$q","$cookies",function($http,$log,$q,$cookie
         
         return logdef.promise;
     };//glogout
+    */
     
     this.getAccesstoken=function(){
         var acctoken = $cookies.get('acctoken');
@@ -187,13 +203,20 @@ ub.service('auth',["$http","$log","$q","$cookies",function($http,$log,$q,$cookie
 ub.service('formsub',[ 'auth',"$http","$log","$q","$timeout","$cookies",function(auth,$http,$log,$q,$timeout,$cookies){
     var user={};
     var self=this;
+    var url;
     
+    if(auth.signprov=='fb'){
+    url = 'http://localhost:3000/api/updproffb';    
+    }else if (auth.signprov=='go'){
+        url='http://localhost:3000/api/updprofgo';
+    }
+        
     self.msg="";
     self.submit=function(user){
         var fsdef = $q.defer();   
         $http({
             method:"POST",
-            url: "http://localhost:3000/api/updprof",
+            url: url,
             params: user,
             headers:{
                 Authorization : "Bearer " + auth.getAccesstoken()
@@ -237,16 +260,28 @@ ub.service('formsub',[ 'auth',"$http","$log","$q","$timeout","$cookies",function
 ub.service('bike',['$http','auth','$log','$q','$base64',function($http,auth,$log,$q,$base64){
     var user={};
     var bike={};
+    var url;
     //retrieve bikes
-    this.getbikes = function(user){
+    
+    
+    this.getbikes = function(){
         var deferred = $q.defer();
-        //$log.log("Bearer: ", auth.getAccesstoken());
-        //$log.log("Bearer base64: ", $base64.encode(auth.getAccesstoken()));
+        //$log.log('auth.getAccesstoken()',auth.getAccesstoken());
+        
+        if(auth.signprov=='fb'){
+            url = 'http://localhost:3000/api/getbikesfb';    
+        }else if (auth.signprov=='go'){
+            url='http://localhost:3000/api/getbikesgo';
+        }
+        
+        //$log.log('user',user);
+        
         $http({
             method:"GET",
-            url:"http://localhost:3000/api/getbikes",
+            url:url,
+            //params:user,
             headers:{
-                Authorization : "Bearer " + auth.getAccesstoken()
+                Authorization : "Bearer " + auth.accesstoken
             }                       
         }).then(function successCallback(srresponse){
             deferred.resolve(srresponse.data);
@@ -261,9 +296,16 @@ ub.service('bike',['$http','auth','$log','$q','$base64',function($http,auth,$log
     //retrieve bikes for which there is no appointment
     this.getbikesappo = function(user){
         var deferred = $q.defer();
+        
+        if(auth.signprov=='fb'){
+            url = 'http://localhost:3000/api/getbikeappofb';    
+        }else if (auth.signprov=='go'){
+            url='http://localhost:3000/api/getbikeappogo';
+        }
+        
         $http({
             method:"GET",
-            url:"http://localhost:3000/api/getbikeappo",
+            url:url,
             params: user,
             headers:{
                 Authorization : "Bearer " + auth.getAccesstoken()
@@ -282,9 +324,16 @@ ub.service('bike',['$http','auth','$log','$q','$base64',function($http,auth,$log
     
     this.delbike = function(bike){
         var deferred = $q.defer();
+        
+        if(auth.signprov=='fb'){
+            url = 'http://localhost:3000/api/delbikefb';    
+        }else if (auth.signprov=='go'){
+            url='http://localhost:3000/api/delbikego';
+        }
+        
         $http({
             method:"DELETE",
-            url:"http://localhost:3000/api/delbike",
+            url:url,
             params: bike,
             headers:{
                 Authorization : "Bearer " + auth.getAccesstoken()
@@ -299,9 +348,16 @@ ub.service('bike',['$http','auth','$log','$q','$base64',function($http,auth,$log
     
     this.subbike = function(bike){
         var deferred = $q.defer();
+        
+        if(auth.signprov=='fb'){
+            url = 'http://localhost:3000/api/regbikefb';    
+        }else if (auth.signprov=='go'){
+            url='http://localhost:3000/api/regbikego';
+        }
+        
         $http({
             method:"POST",
-            url:"http://localhost:3000/api/regbike",
+            url:url,
             params: bike,
             headers:{
                 Authorization : "Bearer " + auth.getAccesstoken()
@@ -324,9 +380,16 @@ ub.service('appo',['auth','$http','$log','$q',function(auth,$http,$log,$q){
     //retrieve appos
     this.getappos = function(user){
         var deferred = $q.defer();
+        
+        if(auth.signprov=='fb'){
+            url = 'http://localhost:3000/api/vapposfb';    
+        }else if (auth.signprov=='go'){
+            url='http://localhost:3000/api/vapposgo';
+        }
+        
         $http({
             method:"GET",
-            url:"http://localhost:3000/api/vappos",
+            url:url,
             params: user,
             headers:{
                 Authorization : "Bearer " + auth.getAccesstoken()
@@ -345,9 +408,16 @@ ub.service('appo',['auth','$http','$log','$q',function(auth,$http,$log,$q){
     
    this.delappo = function(appo){
         var deferred = $q.defer();
+       
+       if(auth.signprov=='fb'){
+            url = 'http://localhost:3000/api/dapposfb';    
+        }else if (auth.signprov=='go'){
+            url='http://localhost:3000/api/dapposgo';
+        }
+       
         $http({
             method:"DELETE",
-            url:"http://localhost:3000/api/dappos",
+            url:url,
             params: appo,
             headers:{
                 Authorization : "Bearer " + auth.getAccesstoken()
@@ -363,9 +433,16 @@ ub.service('appo',['auth','$http','$log','$q',function(auth,$http,$log,$q){
     
     this.addappo = function(appo){
         var deferred = $q.defer();
+        
+        if(auth.signprov=='fb'){
+            url = 'http://localhost:3000/api/capposfb';    
+        }else if (auth.signprov=='go'){
+            url='http://localhost:3000/api/capposgo';
+        }
+        
         $http({
             method:"POST",
-            url:"http://localhost:3000/api/cappos",
+            url:url,
             params: appo,
             headers:{
                 Authorization : "Bearer " + auth.getAccesstoken()

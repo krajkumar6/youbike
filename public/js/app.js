@@ -69,13 +69,13 @@ var gapify=function(){
 }
     
 // registering a listener for $routeChangeStart event
-$rootScope.$on('$routeChangeStart',function(event,next,current){
+/*$rootScope.$on('$routeChangeStart',function(event,next,current){
 if(next.$$route.authenticated){
     var userAuth = auth.getAccesstoken();
     if(!userAuth){
         $location.path('/');
     }
   }
-});
+});*/
     
 }]);//run

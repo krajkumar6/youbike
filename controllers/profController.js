@@ -1,8 +1,8 @@
 var ubCust = require('../models/ubCust.js');
 var bodyParser = require('body-parser');
 var gCtrl = require('./googleController.js');
-var guestmenu =['Services','Contact','About','Register/Login','Appointments'];
-var usermenu=['Profile','Appointments','Bikes','Logout'];
+//var guestmenu =['Services','Contact','About','Register/Login','Appointments'];
+//var usermenu=["Profile","Appointment","Bikes","Logout"];
 
 module.exports = function (app,passport){
 	app.use(bodyParser.json());
@@ -14,8 +14,9 @@ module.exports = function (app,passport){
       function (req, res) {
         // do something with req.user
         if(req.user){
-            req.user.menu=usermenu;
+            //req.user.menu = usermenu;
             console.log('fb user authenticated');
+            //console.log('req.user.menu :',req.user.menu);
             res.send(req.user);
         }
         else{
@@ -30,7 +31,7 @@ module.exports = function (app,passport){
              gCtrl,
       function (req, res) {
         // do something with req.user
-        
+        req.user.menu=usermenu;
         //console.log('req token',req.token);
         var guser=req.guser;
         //console.log('google user',guser);
